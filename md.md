@@ -14,3 +14,11 @@ nun index.php
 -rand soll fix sein und (und keine scrollbalken,kein verschieben über rand und man soll für curl/iframe auch fixe größen auswählen können (zb 4k dh das das iframe "denkt" bzw darauf ausgelegt ist das 4k auch wenn ichs kleiner ziehe oder anderes format und format soll auch angeben sein )und entsprechend dann speeren und dasselbe bei bildern usw.
 -und default soll nicht 1080 sondern 4k sein(gesamtauflösung seite). und es soll besser wechseln wenn ich anderes widget wähle(nicht beim alten) und jedes widget soll eine ebene angegben sein und diese soll tauschbar/änderbar sein.
 sag mir wieder welche balken ersetzen/einfügen sodass am ende der saubere gewümschte editor entsteht (gehe von der angehängten version auß)
+```
+````
+-ändere noch das page name festlegbar ist
+-editor aufrüumen (weniger modernes rundes dising und weniger text(admin gui))
+-rand soll fix sein und (und keine scrollbalken,kein verschieben über rand und man soll für curl/iframe auch fixe größen auswählen können (zb 4k dh das das iframe "denkt" bzw darauf ausgelegt ist das 4k auch wenn ichs kleiner ziehe oder anderes format und format soll auch angeben sein )und entsprechend dann speeren und dasselbe bei bildern usw.
+-und default soll nicht 1080 sondern 4k sein(gesamtauflösung seite). und es soll besser wechseln wenn ich anderes widget wähle(nicht beim alten) und jedes widget soll eine ebene angegben sein und diese soll tauschbar/änderbar sein.
+sag mir wieder welche balken ersetzen/einfügen sodass am ende der saubere gewümschte editor entsteht (gehe von der angehängten version auß)
+```
