@@ -1,4 +1,8 @@
 <?php];$indent=[0];
+declare(strict_types=1);
+date_default_timezone_set('Europe/Berlin');
+function yamlParse(string $file):array{
+$lines=file($file,FILE_IGNORE_NEW_LINES);
 foreach($lines as $l){
 if(trim($l)===''||str_starts_with(trim($l),'#'))continue;
 $i=strlen($l)-strlen(ltrim($l,' '));
@@ -65,8 +69,3 @@ el.src='data:text/html,<style>html,body{margin:0;background:black}img{width:100%
 setTimeout(()=>{i++;show();},(parseInt(c.duration)||10)*1000);}
 show();
 </script></body></html>
-``
-declare(strict_types=1);
-date_default_timezone_set('Europe/Berlin');
-function yamlParse(string $file):array{
-$lines=file($file,FILE_IGNORE_NEW_LINES);
