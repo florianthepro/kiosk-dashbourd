@@ -8,3 +8,6 @@ Gebe mir nun editor.php und in einem 2. promt index.php aus.(data.json wird gene
 ```
 nun index.php
 ```
+```
+erweitere editor.php sodass die einzellnen funktionen funktional werden und weitere seiten settings und generelle settings hinzukommen
+```
