@@ -920,3 +920,4 @@ if(typeof applyViewScale==="function")applyViewScale();
 -auserdem soll allgemein fixer rand bleiben es soll aber nicht über rand gehen dh die angepasst das der rand bis rechts und unten nur zu bildschirmrand geht außerdem soll das schedule (und andere sachen) immer nur zur acktiven page sein.)(dementsprtechend und allgemien den die fächer die im "editor" sind etwas mehr zusammenfassen). und man soll angeben bei content ob große anpasst wärend man mauszeiger zieht und ob verähltnis original bleibt oder auch anpasst (und es soll content formate weiterhin geben um schnell auf belibte auflösungen zu setzen (wenn der punkt größe mit mauszeiger ändern an ist dann soll auch entsprechend wenn man setzt kleiner/größer werden)
 sag mir wieder welche codeblöcke wie anpassen/ersetzen
 -farblich ein dising wählen (eher dunkel/schlicht (nicht so rund)
+-hintergrund item sehen
