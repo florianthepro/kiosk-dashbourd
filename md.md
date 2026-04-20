@@ -11,5 +11,7 @@ nun index.php
 ```
 erweitere editor.php sodass die einzellnen funktionen funktional werden und weitere seiten settings und generelle settings hinzukommen
 ```
+```
 ändere noch das page name festlegbar ist und räume den editor auf (weniger modernes rundes dising und weniger text(admin gui)) und es soll bei html nicht nur iframe sondern auch die option geben das die seite den html holt und diesen dann einbindet. es soll live schonmal vorschau geben von allem wie es hinterher aussieht und aber entsprechend in data.json stehen.
 da der quellcode nun sehr groß wird gehen wir von der letzten version (hängt an) aus und du sagst mir welchen block ich durch welchen ersetze sodass eine der sachen die in dem promt gefordert sind umgesetzt werden (und im nächsten promt ändern wir das nächste usw.)
+```
