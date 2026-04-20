@@ -1,2 +1,3 @@
 ```
 Mache eine single file index.php welche man sachen konfiguriren wie das dashbourd aussehen soll mit unter anderem rotirenden karten (webseiten bildern etc) und hintergrund (webseiten bildern etc) und sachen zu bestimmten urzeiten/zeiträumen(webseiten bildern etc) und wenn man die index.php mit index.php?=dash öffnet soll das diffinirte zu sehen sein sodass ich die seite mit ?=dash im kiosk auf monitor machen kannn  und dann zb webseiten oder so zeigen kann. gespeichert soll in einer dashbourd.yaml im selben ordner gespeichert sein dh nur eine index.php und eine yaml im selben ordner
+fange basic&funktional an sodass wir die gesamten funktionen nach und nach implementiren
