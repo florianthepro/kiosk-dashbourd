@@ -274,11 +274,15 @@ elPageList.appendChild(row);
 }
 function miniBtn(t,fn){let b=document.createElement("button");b.textContent=t;b.onclick=fn;return b;}
 function movePage(i,dir){let j=i+dir;if(j<0||j>=data.pages.length)return;let a=data.pages[i];data.pages.splice(i,1);data.pages.splice(j,0,a);pi=j;renderAll();}
-function addPage(){.pages.length+1));
+function addPage(){
+let n=prompt("Page name:","Page "+(data.pages.length+1));
 n=(n==null?"":String(n)).trim();
 if(!n)n="Page "+(data.pages.length+1);
 data.pages.push({id:uid(),name:n,thumb:"",settings:{w:3840,h:2160},background:{fade:1,items:[]},widgets:[]});
-pi=data.pages.length-1;selectedIds=[];renderAll();setTab("page");
+pi=data.pages.length-1;
+selectedIds=[];
+renderAll();
+setTab("page");
 }
 function dupPage(i){
 let p=deepClone(data.pages[i]);p.id=uid();p.name=p.name+" Copy";p.widgets.forEach(w=>{w.id=uid();w.x+=20;w.y+=20;});data.pages.push(p);pi=data.pages.length-1;selectedIds=[];renderAll();
@@ -310,7 +314,7 @@ return w.type;
 }
 function renderCanvas(){
 let p=getPage();
-let cw=+p.settings.w||1920,ch=+p.settings.h||1080;
+let cw=+p.settings.w||3840,ch=+p.settings.h||2160;
 elCanvas.style.width=cw+"px";elCanvas.style.height=ch+"px";
 elCanvasInfo.textContent="Canvas "+cw+"×"+ch+" · Page: "+p.name;
 startBgPreview(p);
@@ -398,29 +402,86 @@ if(it.title){let t=document.createElement("div");t.className="pvTag";t.textConte
 function cssEsc(s){return (window.CSS&&CSS.escape)?CSS.escape(s):String(s).replace(/[^a-zA-Z0-9_\-]/g,"\\$&");}
 function renderWidgetPreview(d,w){
 d.innerHTML="";
-let wrap=document.createElement("div");wrap.className="pv";d.appendChild(wrap);
-if(w.type==="text"){let t=document.createElement("div");t.style.padding="8px";t.style.whiteSpace="pre-wrap";t.textContent=w.text||"";wrap.appendChild(t);return;}
-if(w.type==="image"){let img=document.createElement("img");img.src=w.src||"";wrap.appendChild(img);return;}
-if(w.type==="clock"){let c=document.createElement("div");c.className="pvCenter pvClock";c.textContent=new Date().toLocaleTimeString();wrap.appendChild(c);return;}
-if(w.type==="url"){w+"px";inner.style.height=ch+"px";inner.style.transformOrigin="0 0";inner.style.transform="scale("+sc+")";
-let fr=document.createElement("iframe");fr.width=cw;fr.height=ch;fr.style.width=cw+"px";fr.style.height=ch+"px";fr.style.border="0";fr.setAttribute("sandbox","allow-scripts allow-forms allow-popups");
-inner.appendChild(fr);wrap.appendChild(inner);
+let wrap=document.createElement("div");
+wrap.className="pv";
+d.appendChild(wrap);
+if(w.type==="text"){
+let t=document.createElement("div");
+t.style.padding="8px";
+t.style.whiteSpace="pre-wrap";
+t.textContent=w.text||"";
+wrap.appendChild(t);
+return;
+}
+if(w.type==="image"){
+let img=document.createElement("img");
+img.src=w.src||"";
+wrap.appendChild(img);
+return;
+}
+if(w.type==="clock"){
+let c=document.createElement("div");
+c.className="pvCenter pvClock";
+c.textContent=new Date().toLocaleTimeString();
+wrap.appendChild(c);
+return;
+}
+if(w.type==="url"){
+let url=(w.src||"").trim();
+let mode=w.mode||"iframe";
+let cw=+w.contentW||3840;
+let ch=+w.contentH||2160;
+let tag=document.createElement("div");
+tag.className="pvTag";
+tag.textContent=mode+" · "+cw+"×"+ch;
+wrap.appendChild(tag);
+if(!url){
+let c=document.createElement("div");
+c.className="pvCenter";
+c.textContent="no url";
+wrap.appendChild(c);
+return;
+}
+let sc=Math.min((w.w||1)/cw,(w.h||1)/ch);
+sc=clamp(sc,0.02,1);
+let inner=document.createElement("div");
+inner.style.position="absolute";
+inner.style.left="0";
+inner.style.top="0";
+inner.style.width=cw+"px";
+inner.style.height=ch+"px";
+inner.style.transformOrigin="0 0";
+inner.style.transform="scale("+sc+")";
+let fr=document.createElement("iframe");
+fr.width=cw;
+fr.height=ch;
+fr.style.width=cw+"px";
+fr.style.height=ch+"px";
+fr.style.border="0";
+fr.setAttribute("sandbox","allow-scripts allow-forms allow-popups");
+inner.appendChild(fr);
+wrap.appendChild(inner);
 fr.src=(mode==="fetch")?proxyFetchUrl(url):url;
 return;
 }
-`` 
-let url=(w.src||"").trim();let mode=w.mode||"iframe";
-let cw=+w.contentW||3840,ch=+w.contentH||2160;
-let tag=document.createElement("div");tag.className="pvTag";tag.textContent=mode+" · "+cw+"×"+ch;wrap.appendChild(tag);
-if(!url){let c=document.createElement("div");c.className="pvCenter";c.textContent="no url";wrap.appendChild(c);return;}
-let sc=Math.min((w.w||1)/cw,(w.h||1)/ch);sc=clamp(sc,0.02,1);
-
 if(w.type==="carousel"){
-let box=document.createElement("div");box.className="pvCarousel";box.style.position="absolute";box.style.inset="0";wrap.appendChild(box);
-if(!w.playlist||!w.playlist.length){let c=document.createElement("div");c.className="pvCenter";c.textContent="empty";wrap.appendChild(c);return;}
+let box=document.createElement("div");
+box.className="pvCarousel";
+box.style.position="absolute";
+box.style.inset="0";
+wrap.appendChild(box);
+if(!w.playlist||!w.playlist.length){
+let c=document.createElement("div");
+c.className="pvCenter";
+c.textContent="empty";
+wrap.appendChild(c);
+}
 return;
 }
-let c=document.createElement("div");c.className="pvCenter";c.textContent=widgetLabel(w);wrap.appendChild(c);
+let c=document.createElement("div");
+c.className="pvCenter";
+c.textContent=widgetLabel(w);
+wrap.appendChild(c);
 }
 function addWidget(type){
 let p=getPage();
@@ -850,7 +911,7 @@ try{let j=JSON.parse(s);data=j;sanitizeClient();markStatus("Imported",true);rend
 catch(e){markStatus("Import invalid",false);}
 }
 renderAll();
-applyViewScale&&applyViewScale();
+if(typeof applyViewScale==="function")applyViewScale();
 </script>
 </body>
 </html>
