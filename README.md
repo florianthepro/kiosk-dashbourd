@@ -17,11 +17,7 @@ Dashbourdtool, um  Dashbourd anzuzeigen.
 > pw.txt und check.php per htaccess sperren
 
 > [!NOTE]
-> [emty] füllen (rules.php index.php auto-download.php)
-> 
 > pw.txt erstellen
-> 
-> auto-download.php & line2 von index.php ist für remote php script welches sql (odder anders) csv bereitstellt.
 
 > [!TIP]
 > Beschreibbar machen:
@@ -31,9 +27,3 @@ Dashbourdtool, um  Dashbourd anzuzeigen.
 >sudo find /var/www/html/#path/ -type d -exec chmod 770 {} \;
 >sudo find /var/www/html/#path/ -type f -exec chmod 660 {} \;
 >```
->add `<meta http-equiv="refresh" content="5">` to index.php
-
-Alternative Namen:(je nach verwendungszewck:)
-
--Ticket Quality Assurance Inspection System
--(...)
