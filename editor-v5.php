@@ -1,4 +1,4 @@
-<?php //Zeile 293
+<?php
 header("Content-Type:text/html;charset=utf-8");
 $path=__DIR__."/data.json";
 $allow_private_fetch=false;
@@ -215,6 +215,7 @@ textarea{min-height:70px;resize:vertical}
 <div id=canvasWrap><div id=canvasScale><div id=canvas><div id=bgPreview><div class=bgLayer id=bgA></div><div class=bgLayer id=bgB></div></div></div></div></div>
 </div>
 </div>
+<div id=modalBg></div><div id=modal><div id=modalHead></div><div id=modalBody></div><div id=modalFoot><button id=modalCancel type=button>Cancel</button><button id=modalOk type=button>OK</button></div></div>
 <script>
 let data=<?php echo json_encode($data,JSON_UNESCAPED_UNICODE); ?>;
 let tab="widget";
@@ -237,25 +238,12 @@ const elPanel=document.getElementById("panel");
 const elStatus=document.getElementById("status");
 const uid=()=>Math.random().toString(36).slice(2);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-const elModalBg=document.getElementById("modalBg");
-const elModal=document.getElementById("modal");
-const elModalHead=document.getElementById("modalHead");
-const elModalBody=document.getElementById("modalBody");
-const elModalCancel=document.getElementById("modalCancel");
-const elModalOk=document.getElementById("modalOk");
+let elModalBg=null,elModal=null,elModalHead=null,elModalBody=null,elModalCancel=null,elModalOk=null,elWidgetListLeft=null;
 let modalOkFn=null;
-function modalOpen(title,build,ok){modalOkFn=ok;elModalHead.textContent=title;elModalBody.innerHTML="";build(elModalBody);elModalBg.style.display="block";elModal.style.display="flex";}
-function modalClose(){elModalBg.style.display="none";elModal.style.display="none";modalOkFn=null;}
-elModalBg.onclick=()=>modalClose();
-elModalCancel.onclick=()=>modalClose();
-elModalOk.onclick=()=>{if(modalOkFn)modalOkFn();modalClose();renderAll();};
-function openAddOverlay(){modalOpen("Add Widget",(box)=>{let sel=document.createElement("select");[{v:"text",t:"Text"},{v:"image",t:"Image"},{v:"url",t:"URL"},{v:"clock",t:"Clock"},{v:"carousel",t:"Carousel"}].forEach(o=>{let op=document.createElement("option");op.value=o.v;op.textContent=o.t;sel.appendChild(op);});box.appendChild(label("Type"));box.appendChild(sel);box._sel=sel;},()=>{addWidget(elModalBody._sel.value);});}
-const elWidgetListLeft=document.getElementById("widgetListLeft");
-document.getElementById("btnAddWidget").onclick=()=>openAddOverlay();
-document.getElementById("btnFront").onclick=()=>{selectedIds.forEach(id=>{let w=getWidgetById(id);if(w)w.z=nextZ();});renderAll();};
-document.getElementById("btnBack").onclick=()=>{selectedIds.forEach(id=>{let w=getWidgetById(id);if(w)w.z=1;});renderAll();};
-document.getElementById("btnDup").onclick=()=>dupSelected();
-document.getElementById("btnDel").onclick=()=>delSelected();
+function modalOpen(title,build,ok){if(!elModal||!elModalBody||!elModalHead||!elModalBg)return;modalOkFn=ok;elModalHead.textContent=title;elModalBody.innerHTML="";build(elModalBody);elModalBg.style.display="block";elModal.style.display="flex";}
+function modalClose(){if(!elModal||!elModalBg)return;elModalBg.style.display="none";elModal.style.display="none";modalOkFn=null;}
+function openAddOverlay(){modalOpen("Add Widget",(box)=>{let sel=document.createElement("select");[{v:"text",t:"Text"},{v:"image",t:"Image"},{v:"url",t:"URL"},{v:"clock",t:"Clock"},{v:"carousel",t:"Carousel"}].forEach(o=>{let op=document.createElement("option");op.value=o.v;op.textContent=o.t;sel.appendChild(op);});box.appendChild(label("Type"));box.appendChild(sel);box._sel=sel;},()=>{if(elModalBody&&elModalBody._sel)addWidget(elModalBody._sel.value);});}
+function initUi(){elModalBg=document.getElementById("modalBg");elModal=document.getElementById("modal");elModalHead=document.getElementById("modalHead");elModalBody=document.getElementById("modalBody");elModalCancel=document.getElementById("modalCancel");elModalOk=document.getElementById("modalOk");elWidgetListLeft=document.getElementById("widgetListLeft");let bAdd=document.getElementById("btnAddWidget");let bF=document.getElementById("btnFront");let bB=document.getElementById("btnBack");let bD=document.getElementById("btnDup");let bX=document.getElementById("btnDel");if(elModalBg)elModalBg.onclick=()=>modalClose();if(elModalCancel)elModalCancel.onclick=()=>modalClose();if(elModalOk)elModalOk.onclick=()=>{if(modalOkFn)modalOkFn();modalClose();renderAll();};if(bAdd)bAdd.onclick=()=>openAddOverlay();if(bF)bF.onclick=()=>{selectedIds.forEach(id=>{let w=getWidgetById(id);if(w)w.z=nextZ();});renderAll();};if(bB)bB.onclick=()=>{selectedIds.forEach(id=>{let w=getWidgetById(id);if(w)w.z=1;});renderAll();};if(bD)bD.onclick=()=>dupSelected();if(bX)bX.onclick=()=>delSelected();}
 function renderLeftWidgets(){
 if(!elWidgetListLeft)return;
 elWidgetListLeft.innerHTML="";
@@ -290,7 +278,6 @@ document.body.classList.toggle("modePages",uiMode==="pages");
 document.body.classList.toggle("modeEditor",uiMode==="editor");
 document.getElementById("modePages").style.opacity=uiMode==="pages"?"1":"0.7";
 document.getElementById("modeEditor").style.opacity=uiMode==="editor"?"1":"0.7";
-/*if(uiMode==="pages")setTab("schedule");*/
 renderAll();
 }
 function sanitizeClient(){
@@ -912,10 +899,10 @@ if(!s)return;
 try{let j=JSON.parse(s);data=j;sanitizeClient();markStatus("Imported",true);renderAll();setTab("schedule");}
 catch(e){markStatus("Import invalid",false);}
 }
+initUi();
 renderAll();
 setMode("editor");
 if(typeof applyViewScale==="function")applyViewScale();
 </script>
-<div id=modalBg></div><div id=modal><div id=modalHead></div><div id=modalBody></div><div id=modalFoot><button id=modalCancel type=button>Cancel</button><button id=modalOk type=button>OK</button></div></div>
 </body>
 </html>
