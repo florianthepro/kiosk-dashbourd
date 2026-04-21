@@ -96,46 +96,48 @@ html,body{margin:0;height:100%;font-family:system-ui,Segoe UI,Arial;background:#
 #top button:hover{background:#39414c}
 #main{display:grid;grid-template-columns:250px 1fr;height:calc(100% - 46px)}
 #pages{grid-column:1;background:#111827;color:#e5e7eb;overflow:hidden;border-right:1px solid #0b1220;display:flex;flex-direction:column}
-#center{grid-column:2;display:flex;flex-direction:column;min-width:0;background:#0b1220}
-#pages .bar{display:flex;gap:6px;padding:8px;border-bottom:1px solid #0b1220;position:sticky;top:0;background:#111827;z-index:2}
+#center{grid-column:2;display:flex;flex-direction:column;min-width:0;background:#0b1220;min-height:0;overflow:hidden}
+#pages .bar{display:flex;gap:6px;flex-wrap:wrap;padding:8px;border-bottom:1px solid #0b1220;position:sticky;top:0;background:#111827;z-index:2;flex:0 0 auto}
 #pages .bar button{width:auto;flex:0 0 auto;background:#1f2937;border:1px solid #273446;color:#e5e7eb;border-radius:6px;padding:6px 8px;cursor:pointer}
-#pages .bar{display:flex;gap:6px;flex-wrap:wrap}
+#pageList{flex:1;overflow:auto}
 #pages .list{padding:6px}
 .pg{display:grid;grid-template-columns:44px 1fr;grid-template-rows:auto auto;gap:8px;align-items:start;background:#0f172a;border:1px solid #1f2a44;border-radius:8px;padding:8px;margin-bottom:8px;cursor:pointer}
+.pg.active{outline:2px solid #60a5fa}
 .pg .thumb{width:44px;height:44px;border-radius:6px;background:#0b1220 center/cover no-repeat;border:1px solid #1f2a44;grid-row:1 / span 2;grid-column:1}
 .pg .meta{grid-row:1;grid-column:2;min-width:0}
-.pg .acts{grid-row:2;grid-column:2;display:flex;gap:4px;justify-self:end}
-.pg.active{outline:2px solid #60a5fa}
 .pg .meta .name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pg .meta .sub{font-size:12px;color:#9ca3af}
+.pg .acts{grid-row:2;grid-column:2;display:flex;gap:4px;justify-self:end}
 .pg .acts button{width:22px;height:22px;padding:0;border-radius:4px;background:#111827;border:1px solid #1f2a44;color:#cbd5e1;cursor:pointer;line-height:20px}
-.pg .meta{flex:1 1 auto;min-width:0}
-.pg .meta .name{max-width:100%}
 .pg .acts button:hover{background:#1f2937}
-#center{flex:1;display:flex;flex-direction:column;min-width:0}
-#centerTop{height:34px;background:#f8fafc;border-bottom:1px solid #d1d5db;display:flex;align-items:center;gap:8px;padding:0 10px}
+#pagesPanel{display:flex;flex-direction:column;min-height:0;flex:1}
+#editorPanel{display:none;flex-direction:column;min-height:0;flex:1}
+body.modePages #pagesPanel{display:flex}
+body.modePages #editorPanel{display:none}
+body.modeEditor #pagesPanel{display:none}
+body.modeEditor #editorPanel{display:flex}
+#centerTop{height:34px;background:#f8fafc;border-bottom:1px solid #d1d5db;display:flex;align-items:center;gap:8px;padding:0 10px;flex:0 0 auto}
 #centerTop .pill{font-size:12px;color:#111827;background:#e5e7eb;border:1px solid #d1d5db;border-radius:999px;padding:5px 10px}
-#canvasWrap{flex:1;position:relative;background:#0b1220;overflow:hidden;display:flex;align-items:center;justify-content:center}
-#center{min-height:0}
-#canvasWrap{min-height:0}
-#canvas{transform-origin:0 0}
-#canvas{position:relative;margin:0;background:#111827;border:2px solid #334155;border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
-#bgPreview{position:absolute;inset:0;border-radius:10px;overflow:hidden;pointer-events:none}
-#bgPreview{z-index:0}
-.widget{z-index:1}
+#canvasWrap{flex:1;min-height:0;min-width:0;position:relative;background:#0b1220;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#canvasScale{position:relative}
+#canvas{transform-origin:0 0;position:relative;margin:0;background:#111827;border:2px solid #334155;border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+#bgPreview{position:absolute;inset:0;border-radius:10px;overflow:hidden;pointer-events:none;z-index:0}
 .bgLayer{position:absolute;inset:0;background:#0b1220 center/cover no-repeat;opacity:0;transition:opacity 1s}
 .bgLayer.on{opacity:.75}
+.widget{position:absolute;box-sizing:border-box;border:1px solid rgba(96,165,250,.9);background:rgba(255,255,255,.84);color:#111827;overflow:hidden;z-index:1}
+.widget.sel{outline:2px solid #ef4444}
+.widget.locked{border-style:dashed;opacity:.85}
+.handle{position:absolute;width:10px;height:10px;right:-5px;bottom:-5px;background:#60a5fa;border-radius:2px;cursor:nwse-resize}
 .pv{position:absolute;inset:0;pointer-events:none}
 .pv iframe,.pv img{width:100%;height:100%;border:0;display:block;pointer-events:none}
 .pv img{object-fit:cover}
 .pvCenter{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
 .pvTag{position:absolute;left:4px;top:4px;font-size:11px;background:rgba(0,0,0,.55);color:#fff;padding:2px 6px;border-radius:2px;pointer-events:none}
 .pvLayer{position:absolute;right:4px;top:4px;font-size:11px;background:rgba(0,0,0,.55);color:#fff;padding:2px 6px;border-radius:2px;pointer-events:none}
-.widget{position:absolute;box-sizing:border-box;border:1px solid rgba(96,165,250,.9);background:rgba(255,255,255,.84);color:#111827;overflow:hidden}
-.widget.sel{outline:2px solid #ef4444}
-.widget.locked{border-style:dashed;opacity:.85}
-.handle{position:absolute;width:10px;height:10px;right:-5px;bottom:-5px;background:#60a5fa;border-radius:2px;cursor:nwse-resize}
-#side{width:360px;background:#fff;border-left:1px solid #d1d5db;overflow:auto}
+#tabs{flex:0 0 auto;display:flex;gap:6px;padding:8px;border-bottom:1px solid #273446;background:#111827;position:static}
+#tabs button{flex:1;background:#1f2937;border:1px solid #273446;border-radius:6px;padding:8px 6px;color:#e5e7eb;cursor:pointer;font-weight:600}
+#tabs button.active{background:#0b1220;color:#fff;border-color:#0b1220}
+#panel{flex:1;overflow:auto;padding:10px;background:#fff}
 fieldset{border:1px solid #e5e7eb;border-radius:10px;padding:10px;margin:0 0 10px}
 legend{padding:0 6px;color:#111827;font-weight:700}
 label{display:block;font-size:12px;color:#374151;margin:8px 0 4px}
@@ -148,26 +150,17 @@ textarea{min-height:70px;resize:vertical}
 .btnRow button.alt{background:#fff;color:#111827;border-color:#d1d5db}
 .btnRow button.danger{background:#ef4444;border-color:#ef4444}
 .small{font-size:12px;color:#6b7280}
-hr{border:0;border-top:1px solid #e5e7eb;margin:10px 0}
 .badge{display:inline-block;font-size:11px;border:1px solid #d1d5db;border-radius:999px;padding:3px 8px;background:#f9fafb;color:#111827}
-body.modeEditor #centerTop{display:flex}
-#pagesPanel{display:flex;flex-direction:column;min-height:0;flex:1}
-#editorPanel{display:none;flex-direction:column;min-height:0;flex:1}
-body.modePages #pagesPanel{display:flex}
-body.modePages #editorPanel{display:none}
-body.modeEditor #pagesPanel{display:none}
-body.modeEditor #editorPanel{display:flex}
-#pages .bar{flex:0 0 auto}
-#pageList{flex:1;overflow:auto}
-#tabs{flex:0 0 auto;display:flex;gap:6px;padding:8px;border-bottom:1px solid #273446;background:#111827;position:static}
-#tabs button{flex:1;background:#1f2937;border:1px solid #273446;border-radius:6px;padding:8px 6px;color:#e5e7eb;cursor:pointer;font-weight:600}
-#tabs button.active{background:#0b1220;color:#fff;border-color:#0b1220}
-#panel{flex:1;overflow:auto;padding:10px;background:#fff}
+#pagesModeHint{display:none!important}
+#editorPanel .bar{display:grid;grid-template-columns:1fr 1fr;gap:6px;flex:0 0 auto;padding:8px;border-bottom:1px solid #0b1220;background:#111827}
+#editorPanel .bar select{grid-column:1/-1;background:#0f172a;color:#e5e7eb;border:1px solid #273446;border-radius:6px;padding:6px 8px}
+#editorPanel .bar button{background:#1f2937;border:1px solid #273446;color:#e5e7eb;border-radius:6px;padding:6px 8px;cursor:pointer;min-width:0}
+#editorPanel .bar button:hover{background:#2b3647}
+#widgetListLeft{flex:0 0 220px;overflow:auto;padding:6px;border-top:1px solid #0b1220;background:#111827}
 .wli{display:flex;align-items:center;gap:8px;background:#0f172a;border:1px solid #1f2a44;border-radius:6px;padding:6px;margin-bottom:6px;cursor:pointer}
 .wli.sel{outline:2px solid #ef4444}
 .wli .t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e5e7eb}
 .wli .z{font-size:11px;color:#9ca3af}
-#canvasScale{position:relative}
 </style></head><body>
 <div id=top>
 <button id=modePages onclick=setMode("pages")>Pages</button>
@@ -186,9 +179,32 @@ body.modeEditor #editorPanel{display:flex}
 </div>
 <div class=list id=pageList></div>
 </div>
-<div id=editorPanel><div id=tabs>...</div><div id=panel></div></div>
+<div id=editorPanel>
+<div class=bar>
+<select id=addWidgetType>
+<option value=text>Text</option>
+<option value=image>Image</option>
+<option value=url>URL</option>
+<option value=clock>Clock</option>
+<option value=carousel>Carousel</option>
+</select>
+<button id=btnAddWidget>Add</button>
+<button id=btnFront>Front</button>
+<button id=btnBack>Back</button>
+<button id=btnDup>Dup</button>
+<button id=btnDel>Del</button>
+</div>
+<div id=tabs>
+<button id=tPage onclick=setTab("page") class=active>General</button>
+<button id=tWidget onclick=setTab("widget")>Widget</button>
+<button id=tSchedule onclick=setTab("schedule")>Schedule</button>
+</div>
+<div id=panel></div>
+<div class=list id=widgetListLeft></div>
+</div>
 </div>
 <div id=center>
+<div id=pagesModeHint>Pages</div>
 <div id=centerTop>
 <span class=pill id=canvasInfo></span>
 <span class=pill id=selInfo></span>
@@ -219,7 +235,30 @@ const elPanel=document.getElementById("panel");
 const elStatus=document.getElementById("status");
 const uid=()=>Math.random().toString(36).slice(2);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-function applyViewScale(){let p=getPage();let cw=+p.settings.w||3840,ch=+p.settings.h||2160;let wrap=document.getElementById("canvasWrap");let scaleBox=document.getElementById("canvasScale");let maxW=Math.max(100,wrap.clientWidth);let maxH=Math.max(100,wrap.clientHeight);let s=Math.min(maxW/cw,maxH/ch);s=Math.max(0.05,Math.min(10,s));scaleBox.style.width=Math.round(cw*s)+"px";scaleBox.style.height=Math.round(ch*s)+"px";elCanvas.style.transform="scale("+s+")";elCanvas.style.transformOrigin="0 0";}
+const elWidgetListLeft=document.getElementById("widgetListLeft");
+const elAddWidgetType=document.getElementById("addWidgetType");
+document.getElementById("btnAddWidget").onclick=()=>addWidget(elAddWidgetType.value);
+document.getElementById("btnFront").onclick=()=>{selectedIds.forEach(id=>{let w=getWidgetById(id);if(w)w.z=nextZ();});renderAll();};
+document.getElementById("btnBack").onclick=()=>{selectedIds.forEach(id=>{let w=getWidgetById(id);if(w)w.z=1;});renderAll();};
+document.getElementById("btnDup").onclick=()=>dupSelected();
+document.getElementById("btnDel").onclick=()=>delSelected();
+function renderLeftWidgets(){
+if(!elWidgetListLeft)return;
+elWidgetListLeft.innerHTML="";
+let p=getPage();
+let ws=p.widgets.slice().sort((a,b)=>(a.z||0)-(b.z||0));
+ws.forEach(w=>{
+let r=document.createElement("div");
+r.className="wli"+(selectedIds.includes(w.id)?" sel":"");
+r.onclick=()=>{selectedIds=[w.id];setTab("widget");renderAll();};
+let t=document.createElement("div");t.className="t";t.textContent=w.type+" · "+(w.text||w.src||w.id).toString().slice(0,40);
+let z=document.createElement("div");z.className="z";z.textContent="Z:"+(w.z||1);
+r.appendChild(t);r.appendChild(z);
+elWidgetListLeft.appendChild(r);
+});
+}
+let viewScale=1;
+function applyViewScale(){let p=getPage();let cw=+p.settings.w||3840,ch=+p.settings.h||2160;let wrap=document.getElementById("canvasWrap");let scaleBox=document.getElementById("canvasScale");let maxW=Math.max(100,wrap.clientWidth);let maxH=Math.max(100,wrap.clientHeight);let s=Math.min(maxW/cw,maxH/ch);s=Math.max(0.05,Math.min(10,s));scaleBox.style.width=Math.round(cw*s)+"px";scaleBox.style.height=Math.round(ch*s)+"px";elCanvas.style.transform="scale("+s+")";elCanvas.style.transformOrigin="0 0";viewScale=s;}
 window.addEventListener("resize",()=>{try{applyViewScale();}catch(e){}});
 function getPage(){return data.pages[pi];}
 function getWidgetById(id){return getPage().widgets.find(w=>w.id===id)||null;}
@@ -559,7 +598,7 @@ e.stopPropagation();e.preventDefault();
 function onMove(e){
 lastMouse={x:e.clientX,y:e.clientY};
 if(dragState){
-let dx=e.clientX-dragState.startX,dy=e.clientY-dragState.startY;
+let dx=(e.clientX-dragState.startX)/viewScale,dy=(e.clientY-dragState.startY)/viewScale;
 let p=getPage();
 dragState.start.forEach(s=>{
 let w=p.widgets.find(x=>x.id===s.id);
@@ -571,7 +610,7 @@ renderCanvas();
 }
 if(resizeState){
 let p=getPage();let w=p.widgets.find(x=>x.id===resizeState.id);
-let dw=e.clientX-resizeState.startX,dh=e.clientY-resizeState.startY;
+let dw=(e.clientX-resizeState.startX)/viewScale,dh=(e.clientY-resizeState.startY)/viewScale;
 let cw=+p.settings.w||3840,ch=+p.settings.h||2160;
 let maxW=Math.max(20,cw-(w.x||0)),maxH=Math.max(20,ch-(w.y||0));
 let newW=clamp(resizeState.startW+dw,20,maxW);
@@ -821,7 +860,7 @@ f.appendChild(rr);
 });
 elPanel.appendChild(f);
 }
-function renderAll(){sanitizeClient();renderPages();renderCanvas();renderSide();}
+function renderAll(){sanitizeClient();renderPages();renderCanvas();renderSide();renderLeftWidgets();}
 async function doSave(){
 sanitizeClient();
 markStatus("Saving...",true);
