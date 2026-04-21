@@ -130,7 +130,9 @@ body.modeEditor #editorPanel{display:flex}
 .widget{position:absolute;box-sizing:border-box;border:1px solid rgba(96,165,250,.9);background:rgba(255,255,255,.84);color:#111827;overflow:hidden;z-index:1}
 .widget.sel{outline:2px solid #ef4444}
 .widget.locked{border-style:dashed;opacity:.85}
-.handle{position:absolute;width:10px;height:10px;right:-5px;bottom:-5px;background:#60a5fa;border-radius:2px;cursor:nwse-resize}
+.handle{position:absolute;right:-10px;bottom:-10px;width:26px;height:26px;background:transparent;cursor:nwse-resize;touch-action:none}
+.handle:after{content:"";position:absolute;right:8px;bottom:8px;width:10px;height:10px;background:#60a5fa;border-radius:2px;box-shadow:0 1px 2px rgba(0,0,0,.35)}
+.widget.locked .handle{display:none}
 .pv{position:absolute;inset:0;pointer-events:none}
 .pv iframe,.pv img{width:100%;height:100%;border:0;display:block;pointer-events:none}
 .pv img{object-fit:cover}
