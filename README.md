@@ -60,4 +60,3 @@ sudo crontab -e
 ```
 /wake:
 sudo apt install -y cec-utils
-echo "on 0" | cec-client -s -d 1
