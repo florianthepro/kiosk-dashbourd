@@ -170,4 +170,3 @@ function autosyncMs(){let s=+((DATA.meta&&DATA.meta.autosync_seconds)||0)||0;if(
 function start(){buildBasePage();renderBase();computeOverlayPages();renderOverlay();setInterval(tick,250);setInterval(reloadIfChanged,autosyncMs());}
 start();
 </script></body></html>
-``
