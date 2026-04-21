@@ -20,6 +20,14 @@ Dashbourdtool, um  Dashbourd anzuzeigen.
 > pw.txt erstellen
 
 > [!TIP]
+> Apache+php:
+> ```
+> sudo apt update \
+>&& sudo apt install -y apache2 \
+>&& sudo systemctl enable --now apache2 \
+>&& sudo apt install -y php libapache2-mod-php php-cli php-common php-mysql php-xml php-curl php-gd php-mbstring \
+>&& sudo systemctl reload apache2
+> ```
 > Beschreibbar machen:
 >```
 >sudo usermod -aG www-data #user
