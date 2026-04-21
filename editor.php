@@ -182,6 +182,9 @@ textarea{min-height:70px;resize:vertical}
 #modalFoot{display:flex;gap:8px;padding:10px 12px;border-top:1px solid #e5e7eb}
 #modalFoot button{flex:1;background:#111827;color:#fff;border:1px solid #111827;border-radius:8px;padding:8px 10px;cursor:pointer}
 #modalCancel{background:#fff!important;color:#111827!important;border-color:#d1d5db!important}
+body.modePages #canvas .widget{pointer-events:none}
+body.modePages #canvas{cursor:default}
+body.modePages #canvas .handle{display:none}
 </style>
 
 </head>
@@ -647,6 +650,7 @@ renderAll();
 function nextZ(){let z=1;getPage().widgets.forEach(w=>{z=Math.max(z,(w.z||1)+1)});return z;}
 function startDrag(e,w){
 if(e.button!==0)return;
+if(uiMode==="pages")return;
 let id=w.id;
 let multi=e.ctrlKey||e.metaKey||e.shiftKey;
 if(multi){if(selectedIds.includes(id))selectedIds=selectedIds.filter(x=>x!==id);else selectedIds=[...selectedIds,id];}
@@ -665,6 +669,7 @@ e.preventDefault();
 }
 function startResize(e,w){
 if(e.button!==0)return;
+if(uiMode==="pages")return;
 if(!selectedIds.includes(w.id))selectedIds=[w.id];
 renderCanvas();
 if(tab==="widget")renderSide();
