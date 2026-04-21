@@ -88,7 +88,14 @@ $j=json_decode(file_get_contents($path),true);
 if($j)$data=sanitize($j,$default);
 }
 ?>
-<!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Dashboard Editor</title><style>
+<!doctype html>
+<html>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>Dashboard Editor</title>
+
+<style>
 html,body{margin:0;height:100%;font-family:system-ui,Segoe UI,Arial;background:#e9edf2}
 #top{height:46px;background:#1f2328;color:#fff;display:flex;align-items:center;gap:8px;padding:0 10px}
 #top .sp{flex:1}
@@ -170,7 +177,10 @@ textarea{min-height:70px;resize:vertical}
 #modalFoot{display:flex;gap:8px;padding:10px 12px;border-top:1px solid #e5e7eb}
 #modalFoot button{flex:1;background:#111827;color:#fff;border:1px solid #111827;border-radius:8px;padding:8px 10px;cursor:pointer}
 #modalCancel{background:#fff!important;color:#111827!important;border-color:#d1d5db!important}
-</style></head><body>
+</style>
+
+</head>
+<body>
 <div id=top>
 <button id=modePages onclick=setMode("pages")>Pages</button>
 <button id=modeEditor onclick=setMode("editor")>Editor</button>
@@ -190,7 +200,6 @@ textarea{min-height:70px;resize:vertical}
 </div>
 <div id=editorPanel>
 <div class=bar>
-
 <button id=btnAddWidget>Add</button>
 <button id=btnFront>Front</button>
 <button id=btnBack>Back</button>
@@ -252,7 +261,6 @@ elModalCancel.onclick=()=>modalHide();
 elModalOk.onclick=()=>{modalHide();addWidget(modalType);};
 document.getElementById("btnAddWidget").onclick=()=>modalShow();
 const elWidgetListLeft=document.getElementById("widgetListLeft");
-
 document.getElementById("btnFront").onclick=()=>{selectedIds.forEach(id=>{let w=getWidgetById(id);if(w)w.z=nextZ();});renderAll();};
 document.getElementById("btnBack").onclick=()=>{selectedIds.forEach(id=>{let w=getWidgetById(id);if(w)w.z=1;});renderAll();};
 document.getElementById("btnDup").onclick=()=>dupSelected();
