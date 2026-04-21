@@ -152,9 +152,8 @@ textarea{min-height:70px;resize:vertical}
 .small{font-size:12px;color:#6b7280}
 .badge{display:inline-block;font-size:11px;border:1px solid #d1d5db;border-radius:999px;padding:3px 8px;background:#f9fafb;color:#111827}
 #pagesModeHint{display:none!important}
-#editorPanel .bar{display:grid;grid-template-columns:1fr 1fr;gap:6px;flex:0 0 auto;padding:8px;border-bottom:1px solid #0b1220;background:#111827}
-#editorPanel .bar select{grid-column:1/-1;background:#0f172a;color:#e5e7eb;border:1px solid #273446;border-radius:6px;padding:6px 8px}
-#editorPanel .bar button{background:#1f2937;border:1px solid #273446;color:#e5e7eb;border-radius:6px;padding:6px 8px;cursor:pointer;min-width:0}
+#editorPanel .bar{display:flex;gap:6px;flex-wrap:wrap;flex:0 0 auto;padding:8px;border-bottom:1px solid #0b1220;background:#111827}
+#editorPanel .bar button{flex:1 1 90px;background:#1f2937;border:1px solid #273446;color:#e5e7eb;border-radius:6px;padding:6px 8px;cursor:pointer}
 #editorPanel .bar button:hover{background:#2b3647}
 #widgetListLeft{flex:0 0 220px;overflow:auto;padding:6px;border-top:1px solid #0b1220;background:#111827}
 .wli{display:flex;align-items:center;gap:8px;background:#0f172a;border:1px solid #1f2a44;border-radius:6px;padding:6px;margin-bottom:6px;cursor:pointer}
@@ -162,7 +161,6 @@ textarea{min-height:70px;resize:vertical}
 .wli .t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e5e7eb}
 .wli .z{font-size:11px;color:#9ca3af}
 .btnRow.tight button{min-width:72px;padding:7px 8px;font-size:12px}
-#editorPanel .bar{grid-template-columns:repeat(3,1fr)}
 #modalBg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9998;display:none}
 #modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(520px,92vw);max-height:min(75vh,700px);background:#fff;border:1px solid #d1d5db;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.45);z-index:9999;display:none;flex-direction:column}
 #modalHead{padding:10px 12px;border-bottom:1px solid #e5e7eb;font-weight:700}
@@ -215,7 +213,7 @@ textarea{min-height:70px;resize:vertical}
 <div id=canvasWrap><div id=canvasScale><div id=canvas><div id=bgPreview><div class=bgLayer id=bgA></div><div class=bgLayer id=bgB></div></div></div></div></div>
 </div>
 </div>
-<div id=modalBg></div><div id=modal><div id=modalHead></div><div id=modalBody></div><div id=modalFoot><button id=modalCancel type=button>Cancel</button><button id=modalOk type=button>OK</button></div></div>
+<div id=modalBg></div><div id=modal><div id=modalHead>Add Widget</div><div id=modalBody></div><div id=modalFoot><button id=modalCancel type=button>Cancel</button><button id=modalOk type=button>OK</button></div></div>
 <script>
 let data=<?php echo json_encode($data,JSON_UNESCAPED_UNICODE); ?>;
 let tab="widget";
@@ -238,12 +236,23 @@ const elPanel=document.getElementById("panel");
 const elStatus=document.getElementById("status");
 const uid=()=>Math.random().toString(36).slice(2);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-let elModalBg=null,elModal=null,elModalHead=null,elModalBody=null,elModalCancel=null,elModalOk=null,elWidgetListLeft=null;
-let modalOkFn=null;
-function modalOpen(title,build,ok){if(!elModal||!elModalBody||!elModalHead||!elModalBg)return;modalOkFn=ok;elModalHead.textContent=title;elModalBody.innerHTML="";build(elModalBody);elModalBg.style.display="block";elModal.style.display="flex";}
-function modalClose(){if(!elModal||!elModalBg)return;elModalBg.style.display="none";elModal.style.display="none";modalOkFn=null;}
-function openAddOverlay(){modalOpen("Add Widget",(box)=>{let sel=document.createElement("select");[{v:"text",t:"Text"},{v:"image",t:"Image"},{v:"url",t:"URL"},{v:"clock",t:"Clock"},{v:"carousel",t:"Carousel"}].forEach(o=>{let op=document.createElement("option");op.value=o.v;op.textContent=o.t;sel.appendChild(op);});box.appendChild(label("Type"));box.appendChild(sel);box._sel=sel;},()=>{if(elModalBody&&elModalBody._sel)addWidget(elModalBody._sel.value);});}
-function initUi(){elModalBg=document.getElementById("modalBg");elModal=document.getElementById("modal");elModalHead=document.getElementById("modalHead");elModalBody=document.getElementById("modalBody");elModalCancel=document.getElementById("modalCancel");elModalOk=document.getElementById("modalOk");elWidgetListLeft=document.getElementById("widgetListLeft");let bAdd=document.getElementById("btnAddWidget");let bF=document.getElementById("btnFront");let bB=document.getElementById("btnBack");let bD=document.getElementById("btnDup");let bX=document.getElementById("btnDel");if(elModalBg)elModalBg.onclick=()=>modalClose();if(elModalCancel)elModalCancel.onclick=()=>modalClose();if(elModalOk)elModalOk.onclick=()=>{if(modalOkFn)modalOkFn();modalClose();renderAll();};if(bAdd)bAdd.onclick=()=>openAddOverlay();if(bF)bF.onclick=()=>{selectedIds.forEach(id=>{let w=getWidgetById(id);if(w)w.z=nextZ();});renderAll();};if(bB)bB.onclick=()=>{selectedIds.forEach(id=>{let w=getWidgetById(id);if(w)w.z=1;});renderAll();};if(bD)bD.onclick=()=>dupSelected();if(bX)bX.onclick=()=>delSelected();}
+const elModalBg=document.getElementById("modalBg");
+const elModal=document.getElementById("modal");
+const elModalBody=document.getElementById("modalBody");
+const elModalCancel=document.getElementById("modalCancel");
+const elModalOk=document.getElementById("modalOk");
+let modalType="text";
+function modalShow(){elModalBody.innerHTML="";let s=document.createElement("select");[{v:"text",t:"Text"},{v:"image",t:"Image"},{v:"url",t:"URL"},{v:"clock",t:"Clock"},{v:"carousel",t:"Carousel"}].forEach(o=>{let op=document.createElement("option");op.value=o.v;op.textContent=o.t;s.appendChild(op);});s.value=modalType;s.oninput=()=>modalType=s.value;elModalBody.appendChild(label("Type"));elModalBody.appendChild(s);elModalBg.style.display="block";elModal.style.display="flex";}
+function modalHide(){elModalBg.style.display="none";elModal.style.display="none";}
+elModalBg.onclick=()=>modalHide();
+elModalCancel.onclick=()=>modalHide();
+elModalOk.onclick=()=>{modalHide();addWidget(modalType);};
+document.getElementById("btnAddWidget").onclick=()=>modalShow();
+const elWidgetListLeft=document.getElementById("widgetListLeft");
+document.getElementById("btnFront").onclick=()=>{selectedIds.forEach(id=>{let w=getWidgetById(id);if(w)w.z=nextZ();});renderAll();};
+document.getElementById("btnBack").onclick=()=>{selectedIds.forEach(id=>{let w=getWidgetById(id);if(w)w.z=1;});renderAll();};
+document.getElementById("btnDup").onclick=()=>dupSelected();
+document.getElementById("btnDel").onclick=()=>delSelected();
 function renderLeftWidgets(){
 if(!elWidgetListLeft)return;
 elWidgetListLeft.innerHTML="";
@@ -278,6 +287,7 @@ document.body.classList.toggle("modePages",uiMode==="pages");
 document.body.classList.toggle("modeEditor",uiMode==="editor");
 document.getElementById("modePages").style.opacity=uiMode==="pages"?"1":"0.7";
 document.getElementById("modeEditor").style.opacity=uiMode==="editor"?"1":"0.7";
+if(uiMode==="pages")setTab("schedule");
 renderAll();
 }
 function sanitizeClient(){
@@ -528,7 +538,7 @@ fr.height=ch;
 fr.style.width=cw+"px";
 fr.style.height=ch+"px";
 fr.style.border="0";
-fr.setAttribute("sandbox","allow-scripts allow-forms allow-popups");
+fr.setAttribute("sandbox","allow-scripts allow-forms allow-popups allow-same-origin allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation");
 inner.appendChild(fr);
 wrap.appendChild(inner);
 fr.src=(mode==="fetch")?proxyFetchUrl(url):url;
@@ -753,9 +763,10 @@ f.appendChild(r2);
 let rz=fieldset("Resize");
 let rr=document.createElement("div");rr.className="row2";
 let ac=document.createElement("div");ac.appendChild(label("Resize scales content"));ac.appendChild(checkbox(!!w.autoContent,v=>{w.autoContent=v;}));
-let la=document.createElement("div");la.appendChild(label("Lock aspect"));la.appendChild(checkbox(!!w.lockAspect,v=>{w.lockAspect=v;resizeState&&(resizeState.ratio=((w.contentW||w.w||1)/(w.contentH||w.h||1)));}));
+let la=document.createElement("div");la.appendChild(label("Lock aspect"));la.appendChild(checkbox(!!w.lockAspect,v=>{w.lockAspect=v;}));
 rr.appendChild(ac);rr.appendChild(la);
 rz.appendChild(rr);
+elPanel.appendChild(rz);
 let ps=fieldset("Presets");
 let br=document.createElement("div");br.className="btnRow tight";
 br.appendChild(btn("16:9","alt",()=>{w.lockAspect=true;let r=16/9;let nw=w.w||320;w.h=Math.round(nw/r);renderCanvas();renderSide();}));
@@ -763,16 +774,10 @@ br.appendChild(btn("4:3","alt",()=>{w.lockAspect=true;let r=4/3;let nw=w.w||320;
 br.appendChild(btn("1:1","alt",()=>{w.lockAspect=true;w.h=w.w||320;renderCanvas();renderSide();}));
 ps.appendChild(br);
 let br2=document.createElement("div");br2.className="btnRow tight";
+br2.appendChild(btn("320×180","alt",()=>{w.w=320;w.h=180;renderCanvas();renderSide();}));
 br2.appendChild(btn("640×360","alt",()=>{w.w=640;w.h=360;renderCanvas();renderSide();}));
-br2.appendChild(btn("960×540","alt",()=>{w.w=960;w.h=540;renderCanvas();renderSide();}));
 br2.appendChild(btn("1280×720","alt",()=>{w.w=1280;w.h=720;renderCanvas();renderSide();}));
 ps.appendChild(br2);
-let br3=document.createElement("div");br3.className="btnRow tight";
-br3.appendChild(btn("320×180","alt",()=>{w.w=320;w.h=180;renderCanvas();renderSide();}));
-br3.appendChild(btn("400×400","alt",()=>{w.w=400;w.h=400;renderCanvas();renderSide();}));
-br3.appendChild(btn("800×450","alt",()=>{w.w=800;w.h=450;renderCanvas();renderSide();}));
-ps.appendChild(br3);
-elPanel.appendChild(rz);
 elPanel.appendChild(ps);
 let st=fieldset("Style");
 let rs=document.createElement("div");rs.className="row2";
@@ -899,7 +904,6 @@ if(!s)return;
 try{let j=JSON.parse(s);data=j;sanitizeClient();markStatus("Imported",true);renderAll();setTab("schedule");}
 catch(e){markStatus("Import invalid",false);}
 }
-initUi();
 renderAll();
 setMode("editor");
 if(typeof applyViewScale==="function")applyViewScale();
