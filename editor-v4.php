@@ -125,7 +125,7 @@ body.modeEditor #pagesPanel{display:none}
 body.modeEditor #editorPanel{display:flex}
 #centerTop{height:34px;background:#f8fafc;border-bottom:1px solid #d1d5db;display:flex;align-items:center;gap:8px;padding:0 10px;flex:0 0 auto}
 #centerTop .pill{font-size:12px;color:#111827;background:#e5e7eb;border:1px solid #d1d5db;border-radius:999px;padding:5px 10px}
-#canvasWrap{flex:1;min-height:0;min-width:0;position:relative;background:#000;overflow:hidden;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:0 10px 10px 0} /*optional bei fehler ändern: align-items:flex-start;justify-content:flex-start;*/
+#canvasWrap{flex:1;min-height:0;min-width:0;position:relative;background:#000;overflow:hidden;display:flex;/*align-items:center;justify-content:center; - old*/align-items:flex-start;justify-content:flex-start;box-sizing:border-box;padding:0 10px 10px 0}
 #canvasScale{position:relative}
 #canvas{transform-origin:0 0;position:relative;margin:0;background:#111827;border:2px solid #334155;border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
 #bgPreview{position:absolute;inset:0;border-radius:10px;overflow:hidden;pointer-events:none;z-index:0}
