@@ -27,3 +27,7 @@ Dashbourdtool, um  Dashbourd anzuzeigen.
 >sudo find /var/www/html/#path/ -type d -exec chmod 770 {} \;
 >sudo find /var/www/html/#path/ -type f -exec chmod 660 {} \;
 >```
+
+To setup an raspberrypi with your dashboard run
+```
+curl -sSL https://raw.githubusercontent.com/florianthepro/public/refs/heads/main/raspberrypi-monitoring/setup.sh | sudo bash
