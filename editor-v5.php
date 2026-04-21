@@ -188,6 +188,7 @@ textarea{min-height:70px;resize:vertical}
 </div>
 <div id=editorPanel>
 <div class=bar>
+
 <button id=btnAddWidget>Add</button>
 <button id=btnFront>Front</button>
 <button id=btnBack>Back</button>
@@ -249,6 +250,7 @@ elModalCancel.onclick=()=>modalHide();
 elModalOk.onclick=()=>{modalHide();addWidget(modalType);};
 document.getElementById("btnAddWidget").onclick=()=>modalShow();
 const elWidgetListLeft=document.getElementById("widgetListLeft");
+
 document.getElementById("btnFront").onclick=()=>{selectedIds.forEach(id=>{let w=getWidgetById(id);if(w)w.z=nextZ();});renderAll();};
 document.getElementById("btnBack").onclick=()=>{selectedIds.forEach(id=>{let w=getWidgetById(id);if(w)w.z=1;});renderAll();};
 document.getElementById("btnDup").onclick=()=>dupSelected();
@@ -538,7 +540,7 @@ fr.height=ch;
 fr.style.width=cw+"px";
 fr.style.height=ch+"px";
 fr.style.border="0";
-fr.setAttribute("sandbox","allow-scripts allow-forms allow-popups allow-same-origin allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation");
+if(mode==="fetch")fr.setAttribute("sandbox","allow-scripts allow-forms allow-popups allow-same-origin allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation");
 inner.appendChild(fr);
 wrap.appendChild(inner);
 fr.src=(mode==="fetch")?proxyFetchUrl(url):url;
@@ -768,16 +770,16 @@ rr.appendChild(ac);rr.appendChild(la);
 rz.appendChild(rr);
 elPanel.appendChild(rz);
 let ps=fieldset("Presets");
-let br=document.createElement("div");br.className="btnRow tight";
-br.appendChild(btn("16:9","alt",()=>{w.lockAspect=true;let r=16/9;let nw=w.w||320;w.h=Math.round(nw/r);renderCanvas();renderSide();}));
-br.appendChild(btn("4:3","alt",()=>{w.lockAspect=true;let r=4/3;let nw=w.w||320;w.h=Math.round(nw/r);renderCanvas();renderSide();}));
-br.appendChild(btn("1:1","alt",()=>{w.lockAspect=true;w.h=w.w||320;renderCanvas();renderSide();}));
-ps.appendChild(br);
-let br2=document.createElement("div");br2.className="btnRow tight";
-br2.appendChild(btn("320×180","alt",()=>{w.w=320;w.h=180;renderCanvas();renderSide();}));
-br2.appendChild(btn("640×360","alt",()=>{w.w=640;w.h=360;renderCanvas();renderSide();}));
-br2.appendChild(btn("1280×720","alt",()=>{w.w=1280;w.h=720;renderCanvas();renderSide();}));
-ps.appendChild(br2);
+let brp=document.createElement("div");brp.className="btnRow tight";
+brp.appendChild(btn("16:9","alt",()=>{w.lockAspect=true;let r=16/9;let nw=w.w||320;w.h=Math.round(nw/r);renderCanvas();renderSide();}));
+brp.appendChild(btn("4:3","alt",()=>{w.lockAspect=true;let r=4/3;let nw=w.w||320;w.h=Math.round(nw/r);renderCanvas();renderSide();}));
+brp.appendChild(btn("1:1","alt",()=>{w.lockAspect=true;w.h=w.w||320;renderCanvas();renderSide();}));
+ps.appendChild(brp);
+let brp2=document.createElement("div");brp2.className="btnRow tight";
+brp2.appendChild(btn("320×180","alt",()=>{w.w=320;w.h=180;renderCanvas();renderSide();}));
+brp2.appendChild(btn("640×360","alt",()=>{w.w=640;w.h=360;renderCanvas();renderSide();}));
+brp2.appendChild(btn("1280×720","alt",()=>{w.w=1280;w.h=720;renderCanvas();renderSide();}));
+ps.appendChild(brp2);
 elPanel.appendChild(ps);
 let st=fieldset("Style");
 let rs=document.createElement("div");rs.className="row2";
