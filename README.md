@@ -1,20 +1,8 @@
 # 📝 Description
 Dashbourdtool, um  Dashbourd anzuzeigen.
-<!--
-<table width="100%">
-  <tr valign="middle">
-    <td align="left">
-      <a href="https://github.com/florianthepro/csv-reporting/archive/refs/tags/v1.zip">Sourcecode</a>
-    </td>
-    <td align="right">
-      <a href="https://github.com/florianthepro/csv-reporting/blob/README/01.md">Read →</a>
-    </td>
-  </tr>
-</table>
--->
 
 > [!NOTE]
-> usefull with [php-auth](https://github.com/florianthepro/php-auth/tree/main)(editor) and [kiosk-pi](https://github.com/florianthepro/kiosk-pi/tree/main)
+> usefull with [php-auth](https://github.com/florianthepro/php-auth/tree/main)(edit.php) and [kiosk-pi](https://github.com/florianthepro/kiosk-pi/tree/main)
 
 > [!TIP]
 > Apache+php:
