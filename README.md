@@ -13,11 +13,8 @@ Dashbourdtool, um  Dashbourd anzuzeigen.
 </table>
 -->
 
-> [!IMPORTANT]
-> pw.txt und check.php per htaccess sperren
-
 > [!NOTE]
-> pw.txt erstellen
+> usefull with "" and ""
 
 > [!TIP]
 > Apache+php:
@@ -35,17 +32,6 @@ Dashbourdtool, um  Dashbourd anzuzeigen.
 >sudo find /var/www/html/#path/ -type d -exec chmod 770 {} \;
 >sudo find /var/www/html/#path/ -type f -exec chmod 660 {} \;
 >```
->htaccess nutzen:
-> ```
-> sudo grep -q "<Directory /var/www/html>" /etc/apache2/apache2.conf || sudo tee -a /etc/apache2/apache2.conf > /dev/null <<'EOF'
-><Directory /var/www/html>
->    AllowOverride All
->    Require all granted
-></Directory>
->EOF
->sudo apachectl configtest && sudo systemctl reload apache2
->```
-> 
 
 To setup an raspberrypi with your dashboard run
 ```
