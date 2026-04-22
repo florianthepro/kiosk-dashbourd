@@ -1,4 +1,3 @@
-<?php session_start();require __DIR__ . '/check.php';require_login();?>
 <?php
 header("Content-Type:text/html;charset=utf-8");
 $path=__DIR__."/data.json";
