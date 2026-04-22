@@ -14,7 +14,7 @@ Dashbourdtool, um  Dashbourd anzuzeigen.
 -->
 
 > [!NOTE]
-> usefull with [php-auth](https://github.com/florianthepro/php-auth/tree/main)(editor) and [kiosk-pi](https://github.com/florianthepro/php-auth/tree/main)
+> usefull with [php-auth](https://github.com/florianthepro/php-auth/tree/main)(editor) and [kiosk-pi](https://github.com/florianthepro/kiosk-pi/tree/main)
 
 > [!TIP]
 > Apache+php:
