@@ -125,9 +125,9 @@ body.modeEditor #pagesPanel{display:none}
 body.modeEditor #editorPanel{display:flex}
 #centerTop{height:34px;background:#f8fafc;border-bottom:1px solid #d1d5db;display:flex;align-items:center;gap:8px;padding:0 10px;flex:0 0 auto}
 #centerTop .pill{font-size:12px;color:#111827;background:#e5e7eb;border:1px solid #d1d5db;border-radius:999px;padding:5px 10px}
-#canvasWrap{flex:1;min-height:0;min-width:0;position:relative;background:#000;overflow:hidden;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:0}
+#canvasWrap{flex:1;min-height:0;min-width:0;position:relative;background:#000;overflow:hidden;display:flex;/*align-items:center;justify-content:center; - old*/align-items:flex-start;justify-content:flex-start;box-sizing:border-box;padding:0 10px 10px 0}
 #canvasScale{position:relative}
-#canvas{transform-origin:0 0;position:relative;margin:0;background:#111827;border:0;border-radius:6px;outline:2px solid #334155;outline-offset:0;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+#canvas{transform-origin:0 0;position:relative;margin:0;background:#111827;border:2px solid #334155;border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
 #bgPreview{position:absolute;inset:0;border-radius:10px;overflow:hidden;pointer-events:none;z-index:0}
 .bgLayer{position:absolute;inset:0;background:#0b1220 center/cover no-repeat;opacity:0;transition:opacity 1s}
 .bgLayer.on{opacity:.75}
@@ -143,6 +143,10 @@ body.modeEditor #editorPanel{display:flex}
 .pvCenter{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
 .pvTag{position:absolute;left:4px;top:4px;font-size:11px;background:rgba(0,0,0,.55);color:#fff;padding:2px 6px;border-radius:2px;pointer-events:none}
 .pvLayer{position:absolute;right:4px;top:4px;font-size:11px;background:rgba(0,0,0,.55);color:#fff;padding:2px 6px;border-radius:2px;pointer-events:none}
+.pvCarousel{position:absolute;inset:0;background:#000}
+.pvCarousel .slot{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .12s linear;background:#000}
+.pvCarousel .slot.on{opacity:1;pointer-events:auto}
+.pvCarousel iframe,.pvCarousel img{width:100%;height:100%;border:0;display:block;background:#000}
 #tabs{flex:0 0 auto;display:flex;gap:6px;padding:8px;border-bottom:1px solid #273446;background:#111827;position:static}
 #tabs button{flex:1;background:#1f2937;border:1px solid #273446;border-radius:6px;padding:8px 6px;color:#e5e7eb;cursor:pointer;font-weight:600}
 #tabs button.active{background:#0b1220;color:#fff;border-color:#0b1220}
@@ -281,7 +285,7 @@ elWidgetListLeft.appendChild(r);
 });
 }
 let viewScale=1;
-function applyViewScale(){let p=getPage();let cw=+p.settings.w||3840,ch=+p.settings.h||2160;let wrap=document.getElementById("canvasWrap");let scaleBox=document.getElementById("canvasScale");let padR=0,padB=0;let maxW=Math.max(100,wrap.clientWidth-padR);let maxH=Math.max(100,wrap.clientHeight-padB);let s=Math.min(maxW/cw,maxH/ch);s=Math.max(0.05,Math.min(10,s));scaleBox.style.width=Math.round(cw*s)+"px";scaleBox.style.height=Math.round(ch*s)+"px";elCanvas.style.transform="scale("+s+")";elCanvas.style.transformOrigin="0 0";viewScale=s;}
+function applyViewScale(){let p=getPage();let cw=+p.settings.w||3840,ch=+p.settings.h||2160;let wrap=document.getElementById("canvasWrap");let scaleBox=document.getElementById("canvasScale");let padR=10,padB=10;let maxW=Math.max(100,wrap.clientWidth-padR);let maxH=Math.max(100,wrap.clientHeight-padB);let s=Math.min(maxW/cw,maxH/ch);s=Math.max(0.05,Math.min(10,s));scaleBox.style.width=Math.round(cw*s)+"px";scaleBox.style.height=Math.round(ch*s)+"px";elCanvas.style.transform="scale("+s+")";elCanvas.style.transformOrigin="0 0";viewScale=s;}
 window.addEventListener("resize",()=>{try{applyViewScale();}catch(e){}});
 function getPage(){return data.pages[pi];}
 function getWidgetById(id){return getPage().widgets.find(w=>w.id===id)||null;}
@@ -469,42 +473,13 @@ function tickClock(){
 let t=new Date().toLocaleTimeString();
 document.querySelectorAll('.widget[data-type="clock"] .pvClock').forEach(n=>n.textContent=t);
 }
-function tickCarousel(p){
-let now=Date.now();
-p.widgets.filter(w=>w.type==="carousel"&&Array.isArray(w.playlist)&&w.playlist.length).forEach(w=>{
-let sig=(w.playlist||[]).map(it=>(it.type||"")+"|"+(it.src||"")+"|"+(+it.duration||0)).join("||");
-let st=carState[w.id];
-if(!st||st.sig!==sig){carState[w.id]={sig:sig,i:0,nextAt:0,nodes:[]};st=carState[w.id];}
-let el=document.querySelector('.widget[data-id="'+cssEsc(w.id)+'"] .pvCarousel');
-if(!el)return;
-if(st.nextAt===0){renderCarouselItem(el,w,st.i);st.nextAt=now+clamp(+w.playlist[st.i].duration||5,1,3600)*1000;return;}
-if(now<st.nextAt)return;
-st.i=(st.i+1)%w.playlist.length;
-renderCarouselItem(el,w,st.i);
-st.nextAt=now+clamp(+w.playlist[st.i].duration||5,1,3600)*1000;
-});
-}
-function renderCarouselItem(el,w,i){
-let st=carState[w.id];
-if(!st){carState[w.id]=st={sig:"",i:0,nextAt:0,nodes:[]};}
-let list=Array.isArray(w.playlist)?w.playlist:[];
-if(!list.length){el.innerHTML="";return;}
-i=((i%list.length)+list.length)%list.length;
-if(!st.nodes)st.nodes=[];
-if(!st.nodes[i]){
-let it=list[i]||{};
-let t=(it.type||"image");
-let node;
-if(t==="image"){node=document.createElement("img");node.src=it.src||"";}
-else{node=document.createElement("iframe");node.src=it.src||"";node.style.border="0";}
-node.dataset.i=String(i);
-st.nodes[i]=node;
-}
-el.innerHTML="";
-el.appendChild(st.nodes[i]);
-let it=list[i]||{};
-if(it.title){let tag=document.createElement("div");tag.className="pvTag";tag.textContent=it.title;el.appendChild(tag);}
-}
+function withBust(u){u=String(u||"");return u+(u.includes("?")?"&":"?")+"_ts="+Date.now();}
+function itemRefreshSeconds(it){let r=it&&(it.refresh??it.reload??it.refreshSeconds??it.refresh_seconds??0);r=+r||0;if(r>0)return r;let g=+((data.meta&&data.meta.carouselIframeRefreshSeconds)||0)||0;return g>0?g:0;}
+function pvAttachBox(st,box){if(!st||!box)return;st.box=box;st.nodes=st.nodes||[];for(let n of st.nodes){if(n&&n.parentNode!==box)box.appendChild(n);}if(st.activeNode){st.nodes.forEach(x=>x&&x.classList.remove("on"));st.activeNode.classList.add("on");}}
+function pvEnsureNode(st,idx){if(st.nodes[idx])return st.nodes[idx];let it=st.list[idx]||{};let t=(it.type||"image");let node;if(t==="image"){node=document.createElement("img");node.src=String(it.src||"");}else{node=document.createElement("iframe");node.src=String(it.src||"");node.style.border="0";node.style.background="#000";}node.className="slot";node.dataset.src0=String(it.src||"");node.dataset.isIframe=(t!=="image")?"1":"0";node.dataset.refresh=String(itemRefreshSeconds(it)||0);node.dataset.lastReload="0";if(st.box)st.box.appendChild(node);st.nodes[idx]=node;return node;}
+function pvShow(st,idx){if(!st||!st.list||!st.list.length||!st.box)return;idx=((idx%st.list.length)+st.list.length)%st.list.length;if(st.activeNode)st.activeNode.classList.remove("on");let n=pvEnsureNode(st,idx);n.classList.add("on");st.activeNode=n;st.i=idx;}
+function pvTickRefresh(st){let n=st&&st.activeNode;if(!n||n.dataset.isIframe!=="1")return;let r=+n.dataset.refresh||0;if(r<=0)return;let last=+n.dataset.lastReload||0;let now=Date.now();if(last===0){n.dataset.lastReload=String(now);return;}if(now-last<r*1000)return;n.dataset.lastReload=String(now);let src0=n.dataset.src0||n.src||"";n.src=withBust(src0);}
+function renderCarouselItem(box,w,i){let list=Array.isArray(w.playlist)?w.playlist:[];if(!list.length){box.innerHTML="";return;}let sig=list.map(it=>String(it.type||"image")+"|"+String(it.src||"")+"|"+(+it.duration||0)+"|"+(+((it.refresh??it.reload??it.refreshSeconds??0))||0)).join("||");let st=carState[w.id];if(!st||st.sig!==sig){st={sig:sig,i:0,nextAt:0,list:list,nodes:[],activeNode:null,box:null};carState[w.id]=st;}st.list=list;pvAttachBox(st,box);pvShow(st,i);}
 function cssEsc(s){return (window.CSS&&CSS.escape)?CSS.escape(s):String(s).replace(/[^a-zA-Z0-9_\-]/g,"\\$&");}
 function renderWidgetPreview(d,w){
 d.innerHTML="";
@@ -576,12 +551,8 @@ box.className="pvCarousel";
 box.style.position="absolute";
 box.style.inset="0";
 wrap.appendChild(box);
-if(!w.playlist||!w.playlist.length){
-let c=document.createElement("div");
-c.className="pvCenter";
-c.textContent="empty";
-wrap.appendChild(c);
-}
+if(w.playlist&&w.playlist.length){renderCarouselItem(box,w,0);}
+else{let c=document.createElement("div");c.className="pvCenter";c.textContent="empty";wrap.appendChild(c);}
 return;
 }
 let c=document.createElement("div");
