@@ -145,7 +145,7 @@ body.modeEditor #editorPanel{display:flex}
 .pvLayer{position:absolute;right:4px;top:4px;font-size:11px;background:rgba(0,0,0,.55);color:#fff;padding:2px 6px;border-radius:2px;pointer-events:none}
 .pvCarousel{position:absolute;inset:0;background:#000}
 .pvCarousel .slot{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .12s linear;background:#000}
-.pvCarousel .slot.on{opacity:1;pointer-events:auto}
+.pvCarousel .slot.on{opacity:1}
 .pvCarousel iframe,.pvCarousel img{width:100%;height:100%;border:0;display:block;background:#000}
 #tabs{flex:0 0 auto;display:flex;gap:6px;padding:8px;border-bottom:1px solid #273446;background:#111827;position:static}
 #tabs button{flex:1;background:#1f2937;border:1px solid #273446;border-radius:6px;padding:8px 6px;color:#e5e7eb;cursor:pointer;font-weight:600}
@@ -435,7 +435,7 @@ elSelInfo.textContent=selectedIds.length?("Selected: "+selectedIds.length):"Sele
 }
 function proxyFetchUrl(u){return location.pathname+"?action=fetchHtml&url="+encodeURIComponent(u)+"&ts="+Date.now();}
 function ensurePreviewLoops(){if(previewStarted)return;previewStarted=true;setInterval(()=>tickPreview(),250);}
-function tickPreview(){let p=getPage();tickBg(p);tickClock();tickCarousel(p);}
+function tickPreview(){let p=getPage();tickBg(p);tickClock();}
 function startBgPreview(p){
 let items=p.background&&Array.isArray(p.background.items)?p.background.items:[];
 let fade=clamp(+((p.background&&p.background.fade)||0),0,20);
@@ -473,13 +473,32 @@ function tickClock(){
 let t=new Date().toLocaleTimeString();
 document.querySelectorAll('.widget[data-type="clock"] .pvClock').forEach(n=>n.textContent=t);
 }
-function withBust(u){u=String(u||"");return u+(u.includes("?")?"&":"?")+"_ts="+Date.now();}
-function itemRefreshSeconds(it){let r=it&&(it.refresh??it.reload??it.refreshSeconds??it.refresh_seconds??0);r=+r||0;if(r>0)return r;let g=+((data.meta&&data.meta.carouselIframeRefreshSeconds)||0)||0;return g>0?g:0;}
-function pvAttachBox(st,box){if(!st||!box)return;st.box=box;st.nodes=st.nodes||[];for(let n of st.nodes){if(n&&n.parentNode!==box)box.appendChild(n);}if(st.activeNode){st.nodes.forEach(x=>x&&x.classList.remove("on"));st.activeNode.classList.add("on");}}
-function pvEnsureNode(st,idx){if(st.nodes[idx])return st.nodes[idx];let it=st.list[idx]||{};let t=(it.type||"image");let node;if(t==="image"){node=document.createElement("img");node.src=String(it.src||"");}else{node=document.createElement("iframe");node.src=String(it.src||"");node.style.border="0";node.style.background="#000";}node.className="slot";node.dataset.src0=String(it.src||"");node.dataset.isIframe=(t!=="image")?"1":"0";node.dataset.refresh=String(itemRefreshSeconds(it)||0);node.dataset.lastReload="0";if(st.box)st.box.appendChild(node);st.nodes[idx]=node;return node;}
-function pvShow(st,idx){if(!st||!st.list||!st.list.length||!st.box)return;idx=((idx%st.list.length)+st.list.length)%st.list.length;if(st.activeNode)st.activeNode.classList.remove("on");let n=pvEnsureNode(st,idx);n.classList.add("on");st.activeNode=n;st.i=idx;}
-function pvTickRefresh(st){let n=st&&st.activeNode;if(!n||n.dataset.isIframe!=="1")return;let r=+n.dataset.refresh||0;if(r<=0)return;let last=+n.dataset.lastReload||0;let now=Date.now();if(last===0){n.dataset.lastReload=String(now);return;}if(now-last<r*1000)return;n.dataset.lastReload=String(now);let src0=n.dataset.src0||n.src||"";n.src=withBust(src0);}
-function renderCarouselItem(box,w,i){let list=Array.isArray(w.playlist)?w.playlist:[];if(!list.length){box.innerHTML="";return;}let sig=list.map(it=>String(it.type||"image")+"|"+String(it.src||"")+"|"+(+it.duration||0)+"|"+(+((it.refresh??it.reload??it.refreshSeconds??0))||0)).join("||");let st=carState[w.id];if(!st||st.sig!==sig){st={sig:sig,i:0,nextAt:0,list:list,nodes:[],activeNode:null,box:null};carState[w.id]=st;}st.list=list;pvAttachBox(st,box);pvShow(st,i);}
+let carPrevStatic={};
+function carFirstSig(w){let list=Array.isArray(w.playlist)?w.playlist:[];if(!list.length)return "";let it=list[0]||{};return String(it.type||"image")+"|"+String(it.src||"")+"|"+String(it.title||"");}
+function carEnsureStaticNode(w){let sig=carFirstSig(w);if(!sig)return null;let st=carPrevStatic[w.id];if(st&&st.sig===sig&&st.node)return st;let list=Array.isArray(w.playlist)?w.playlist:[];let it=list[0]||{};let t=(it.type||"image");let node;if(t==="image"){node=document.createElement("img");node.src=String(it.src||"");}else{node=document.createElement("iframe");node.src=String(it.src||"");node.style.border="0";node.style.background="#000";}node.className="slot on";carPrevStatic[w.id]={sig:sig,node:node};return carPrevStatic[w.id];}
+function carMountStatic(box,w){let st=carEnsureStaticNode(w);box.innerHTML="";if(!st||!st.node){let c=document.createElement("div");c.className="pvCenter";c.textContent="empty";box.appendChild(c);return;}box.appendChild(st.node);let list=Array.isArray(w.playlist)?w.playlist:[];let it=list[0]||{};if(it.title){let tag=document.createElement("div");tag.className="pvTag";tag.textContent=String(it.title);box.appendChild(tag);}}
+function tickCarousel(p){}
+function renderCarouselItem(el,w,i){
+let st=carState[w.id];
+if(!st){carState[w.id]=st={sig:"",i:0,nextAt:0,nodes:[]};}
+let list=Array.isArray(w.playlist)?w.playlist:[];
+if(!list.length){el.innerHTML="";return;}
+i=((i%list.length)+list.length)%list.length;
+if(!st.nodes)st.nodes=[];
+if(!st.nodes[i]){
+let it=list[i]||{};
+let t=(it.type||"image");
+let node;
+if(t==="image"){node=document.createElement("img");node.src=it.src||"";}
+else{node=document.createElement("iframe");node.src=it.src||"";node.style.border="0";}
+node.dataset.i=String(i);
+st.nodes[i]=node;
+}
+el.innerHTML="";
+el.appendChild(st.nodes[i]);
+let it=list[i]||{};
+if(it.title){let tag=document.createElement("div");tag.className="pvTag";tag.textContent=it.title;el.appendChild(tag);}
+}
 function cssEsc(s){return (window.CSS&&CSS.escape)?CSS.escape(s):String(s).replace(/[^a-zA-Z0-9_\-]/g,"\\$&");}
 function renderWidgetPreview(d,w){
 d.innerHTML="";
@@ -551,8 +570,7 @@ box.className="pvCarousel";
 box.style.position="absolute";
 box.style.inset="0";
 wrap.appendChild(box);
-if(w.playlist&&w.playlist.length){renderCarouselItem(box,w,0);}
-else{let c=document.createElement("div");c.className="pvCenter";c.textContent="empty";wrap.appendChild(c);}
+carMountStatic(box,w);
 return;
 }
 let c=document.createElement("div");
