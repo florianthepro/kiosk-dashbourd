@@ -426,7 +426,6 @@ if(hiddenHoverTimer){clearTimeout(hiddenHoverTimer);hiddenHoverTimer=null;}
 function wctxMenuOnlyHide(){
 if(elWCtxMenu)elWCtxMenu.style.display="none";
 if(elWctxHiddenMenu)elWctxHiddenMenu.style.display="none";
-if(elWctxAddMenu)elWctxAddMenu.style.display="none";
 }
 function wctxUpdate(){
 if(!elWCtxMenu)return;
@@ -821,7 +820,7 @@ if(act==="delete"){if(data.pages.length<=1)return;if(confirm("Delete page?"))del
 if(elWCtxMenu)elWCtxMenu.onclick=e=>{
 let b=e.target.closest("button");if(!b||b.disabled)return;
 let act=b.dataset.act||"";
-if(act==="add"){showAddMenu(b);wctxMenuOnlyHide();return;}
+if(act==="add"){showAddMenu(b);if(elWCtxMenu)elWCtxMenu.style.display="none";return;}
 if(act==="edit"){weditShow(b);wctxMenuOnlyHide();return;}
 if(!selectedIds.length){wctxHide();return;}
 if(act==="dup"){dupSelected();wctxHide();return;}
