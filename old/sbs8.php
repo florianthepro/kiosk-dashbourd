@@ -597,18 +597,24 @@ selectedIds=[];
 renderAll();
 }
 
-function pagePopHide(){if(elPagePop)elPagePop.style.display="none";if(elPagePopHead)elPagePopHead.textContent="";if(elPagePopBody)elPagePopBody.innerHTML="";}(elRenameOk)elRenameOk.click();}
-if(e.key==="Escape"){e.preventDefault();renamePopHide();}
-};
-``
-function renamePopHide(){if(elRenamePop)elRenamePop.style.display="none";}
-function ctxHide(){
-if(!elCtxMenu)return;
-elCtxMenu.style.display="none";
-ctxPageIndex=null;
-pagePopHide();
-renamePopHide();
+function reorderPages(from,to){
+if(from==null||to==null)return;
+from=+from;to=+to;
+if(!Number.isFinite(from)||!Number.isFinite(to))return;
+if(from===to)return;
+from=Math.max(0,Math.min(from,data.pages.length-1));
+to=Math.max(0,Math.min(to,data.pages.length-1));
+let moved=data.pages.splice(from,1)[0];
+data.pages.splice(to,0,moved);
+if(pi===from)pi=to;
+else if(from<pi&&pi<=to)pi--;
+else if(to<=pi&&pi<from)pi++;
+selectedIds=[];
+renderAll();
 }
+function pagePopHide(){if(elPagePop)elPagePop.style.display="none";if(elPagePopHead)elPagePopHead.textContent="";if(elPagePopBody)elPagePopBody.innerHTML="";}
+function renamePopHide(){if(elRenamePop)elRenamePop.style.display="none";}
+function ctxHide(){if(!elCtxMenu)return;elCtxMenu.style.display="none";ctxPageIndex=null;pagePopHide();renamePopHide();}
 function ctxShow(e,i){
 e.preventDefault();e.stopPropagation();
 ctxPageIndex=i;
@@ -668,6 +674,10 @@ renamePopHide();
 renderAll();
 };
 if(elRenameInp)elRenameInp.onkeydown=e=>{
+if(e.key==="Enter"){e.preventDefault();if(elRenameOk)elRenameOk.click();}
+if(e.key==="Escape"){e.preventDefault();renamePopHide();}
+};
+document.addEventListener("click",e=>{if(elCtxMenu&&elCtxMenu.style.display==="block"&&elCtxMenu.contains(e.target))return;if(elPagePop&&elPagePop.style.display==="block"&&elPagePop.contains(e.target))return;if(elRenamePop&&elRenamePop.style.display==="block"&&elRenamePop.contains(e.target))return;ctxHide();},true);
 
 document.addEventListener("click",e=>{if(elCtxMenu&&elCtxMenu.style.display==="block"&&elCtxMenu.contains(e.target))return;ctxHide();},true);
 document.addEventListener("keydown",e=>{if(e.key==="Escape")ctxHide();},true);
