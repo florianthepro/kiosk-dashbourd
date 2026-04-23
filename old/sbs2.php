@@ -192,9 +192,9 @@ body.modePages #canvas{cursor:default}
 #ctxMenu .sep{height:1px;background:#e5e7eb;margin:4px 0}
 #pagesPanel .bar{flex-wrap:nowrap}
 #pagesPanel .bar button{flex:1 1 auto;width:100%}
-.pg{user-select:none}
-.pg{cursor:grab}
-.pg.dragging{opacity:.55;cursor:
+.pg{user-select:none;cursor:grab}
+.pg.dragging{opacity:.55;cursor:grabbing}
+.pg.drop{outline:2px dashed #f59e0b}
 </style>
 
 </head>
@@ -266,7 +266,7 @@ let carState={};
 let bgState={sig:"",i:0,nextAt:0,onA:true,pageId:""};
 let previewStarted=false;
 const elPageList=document.getElementById("pageList");
-if(elPageList)elPageList.addEventListener("scroll",()=>ctx
+if(elPageList)elPageList.addEventListener("scroll",()=>ctxHide(),{passive:true});
 const elCanvas=document.getElementById("canvas");
 const elBgPreview=document.getElementById("bgPreview");
 const elBgA=document.getElementById("bgA");
@@ -317,7 +317,7 @@ y=Math.max(8,Math.min(y,hh-r.height-8));
 elCtxMenu.style.left=x+"px";
 elCtxMenu.style.top=y+"px";
 }
-document.addEventListener("click",e=>{if(elCtxMenu&&elCtxMenu.style.display==="block"&&
+document.addEventListener("click",e=>{if(elCtxMenu&&elCtxMenu.style.display==="block"&&elCtxMenu.contains(e.target))return;ctxHide();},true);
 document.addEventListener("keydown",e=>{if(e.key==="Escape")ctxHide();},true);
 window.addEventListener("resize",()=>ctxHide(),true);
 document.addEventListener("scroll",()=>ctxHide(),true);
