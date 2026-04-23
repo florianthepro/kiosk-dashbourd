@@ -1,4 +1,4 @@
-<?php
+<?php //310
 header("Content-Type:text/html;charset=utf-8");
 $path=__DIR__."/data.json";
 $allow_private_fetch=false;
@@ -216,6 +216,29 @@ body.modeEditor #widgetListLeft{display:none!important}
 #wctxHiddenMenu button{display:flex;width:100%;border:0;background:transparent;padding:10px 12px;text-align:left;cursor:pointer;font:inherit;color:#111827}
 #wctxHiddenMenu button:hover{background:#f3f4f6}
 #wctxHiddenMenu .empty{padding:10px 12px;color:#6b7280;font-size:12px}
+#pagePop{position:fixed;z-index:10003;display:none;width:min(920px,96vw);max-height:min(82vh,900px);background:#fff;border:1px solid #d1d5db;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.45);overflow:hidden}
+#pagePopHead{padding:10px 12px;border-bottom:1px solid #e5e7eb;font-weight:800;background:#f9fafb;color:#111827}
+#pagePopBody{padding:10px 12px;overflow:auto;max-height:calc(82vh - 96px)}
+#pagePopFoot{display:flex;gap:8px;padding:10px 12px;border-top:1px solid #e5e7eb}
+#pagePopFoot button{flex:1;background:#111827;color:#fff;border:1px solid #111827;border-radius:8px;padding:8px 10px;cursor:pointer}
+#renamePop{position:fixed;z-index:10004;display:none;background:#fff;border:1px solid #d1d5db;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.45);padding:10px;min-width:280px}
+#renamePop input{width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius:8px;padding:8px;font:inherit}
+#renamePop .rpRow{display:flex;gap:8px;margin-top:8px}
+#renamePop .rpRow button{flex:1;background:#111827;color:#fff;border:1px solid #111827;border-radius:8px;padding:8px 10px;cursor:pointer}
+#wctxAddMenu{position:fixed;z-index:10023;display:none;min-width:220px;background:#fff;border:1px solid #d1d5db;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.45);overflow:hidden}
+#wctxAddMenu button{display:flex;width:100%;border:0;background:transparent;padding:10px 12px;text-align:left;cursor:pointer;font:inherit;color:#111827}
+#wctxAddMenu button:hover{background:#f3f4f6}
+#modePages,#modeEditor{display:none!important}
+#pagesPanel{display:flex!important}
+#editorPanel{display:none!important}
+#newPagePop{position:fixed;z-index:10005;display:none;background:#fff;border:1px solid #d1d5db;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.45);padding:10px;min-width:280px}
+#newPagePop input{width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius:8px;padding:8px;font:inherit}
+#newPagePop .rpRow{display:flex;gap:8px;margin-top:8px}
+#newPagePop .rpRow button{flex:1;background:#111827;color:#fff;border:1px solid #111827;border-radius:8px;padding:8px 10px;cursor:pointer}
+#weditPop{position:fixed;z-index:10024;display:none;background:#fff;border:1px solid #d1d5db;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.45);padding:10px;min-width:320px;max-width:min(520px,92vw)}
+#weditPop .lbl{font-size:12px;color:#111827;font-weight:800;margin-bottom:6px}
+#weditPop input,#weditPop select,#weditPop textarea{width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius:8px;padding:8px;font:inherit}
+#weditPop .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 </style>
 
 </head>
@@ -265,15 +288,36 @@ body.modeEditor #widgetListLeft{display:none!important}
 <div id=modalBg></div><div id=modal><div id=modalHead>Add Widget</div><div id=modalBody></div><div id=modalFoot><button id=modalCancel type=button>Cancel</button><button id=modalOk type=button>OK</button></div></div>
 <div id=editModalBg></div><div id=editModal><div id=editModalHead></div><div id=editModalBody></div><div id=editModalFoot><button id=editModalClose type=button>Close</button></div></div>
 <div id=ctxMenu>
-<button data-act="general">General</button>
-<button data-act="schedule">Schedule</button>
+<button data-act="general">General…</button>
+<button data-act="schedule">Schedule…</button>
 <div class=sep></div>
-<button data-act="rename">Rename</button>
+<button data-act="rename">Rename…</button>
 <button data-act="duplicate">Duplicate</button>
 <button data-act="delete">Delete</button>
 </div>
+<div id=pagePop>
+<div id=pagePopHead></div>
+<div id=pagePopBody></div>
+<div id=pagePopFoot><button id=pagePopClose type=button>Close</button></div>
+</div>
+<div id=renamePop>
+<input id=renameInp type=text>
+<div class=rpRow>
+<button id=renameCancel type=button>Cancel</button>
+<button id=renameOk type=button>OK</button>
+</div>
+</div>
+<div id=newPagePop>
+<input id=newPageInp type=text>
+<div class=rpRow>
+<button id=newPageCancel type=button>Cancel</button>
+<button id=newPageOk type=button>OK</button>
+</div>
+</div>
 <div id=wctxMenu>
 <button data-act="add">Add Widget…</button>
+<div class=sep data-needs="sel"></div>
+<button data-act="edit" data-needs="sel">Edit…</button>
 <div class=sep data-needs="sel"></div>
 <button data-act="dup" data-needs="sel">Duplicate</button>
 <button data-act="del" data-needs="sel">Delete</button>
@@ -289,7 +333,15 @@ body.modeEditor #widgetListLeft{display:none!important}
 <div class=sep data-needs="hidden"></div>
 <button data-act="hidden" data-needs="hidden">Hidden ▸</button>
 </div>
+<div id=weditPop>
+<div class=lbl id=weditTitle>Widget</div>
+<div id=weditBody></div>
+<div class=rpRow>
+<button id=weditCancel type=button>Close</button>
+</div>
+</div>
 <div id=wctxHiddenMenu></div>
+<div id=wctxAddMenu></div>
 <div id=colorPop>
 <div class=lbl id=colorPopLbl>Color</div>
 <input id=colorInp type="color" value="#ffffff">
@@ -323,6 +375,18 @@ const elModalBody=document.getElementById("modalBody");
 const elModalCancel=document.getElementById("modalCancel");
 const elModalOk=document.getElementById("modalOk");
 const elCtxMenu=document.getElementById("ctxMenu");
+const elPagePop=document.getElementById("pagePop");
+const elPagePopHead=document.getElementById("pagePopHead");
+const elPagePopBody=document.getElementById("pagePopBody");
+const elPagePopClose=document.getElementById("pagePopClose");
+const elRenamePop=document.getElementById("renamePop");
+const elNewPagePop=document.getElementById("newPagePop");
+const elNewPageInp=document.getElementById("newPageInp");
+const elNewPageOk=document.getElementById("newPageOk");
+const elNewPageCancel=document.getElementById("newPageCancel");
+const elRenameInp=document.getElementById("renameInp");
+const elRenameOk=document.getElementById("renameOk");
+const elRenameCancel=document.getElementById("renameCancel");
 const elEditModalBg=document.getElementById("editModalBg");
 const elEditModal=document.getElementById("editModal");
 const elEditModalHead=document.getElementById("editModalHead");
@@ -333,6 +397,11 @@ const elColorPop=document.getElementById("colorPop");
 const elColorInp=document.getElementById("colorInp");
 const elColorPopLbl=document.getElementById("colorPopLbl");
 const elWctxHiddenMenu=document.getElementById("wctxHiddenMenu");
+const elWctxAddMenu=document.getElementById("wctxAddMenu");
+const elWeditPop=document.getElementById("weditPop");
+const elWeditTitle=document.getElementById("weditTitle");
+const elWeditBody=document.getElementById("weditBody");
+const elWeditCancel=document.getElementById("weditCancel");
 let hiddenHoverTimer=null;
 let wctxHasSel=false;
 let colorMode="bg";
@@ -350,6 +419,8 @@ function wctxHide(){
 if(elWCtxMenu)elWCtxMenu.style.display="none";
 if(elColorPop)elColorPop.style.display="none";
 if(elWctxHiddenMenu)elWctxHiddenMenu.style.display="none";
+if(elWctxAddMenu)elWctxAddMenu.style.display="none";
+if(elWeditPop)elWeditPop.style.display="none";
 if(hiddenHoverTimer){clearTimeout(hiddenHoverTimer);hiddenHoverTimer=null;}
 }
 function wctxUpdate(){
@@ -392,6 +463,58 @@ let p=getPage();
 for(let id of selectedIds){let w=p.widgets.find(x=>x.id===id);if(w)return w;}
 return null;
 }
+function weditShow(anchorBtn){
+let w=firstSelWidget();
+if(!w||!elWeditPop||!elWeditBody||!elWeditTitle)return;
+elWeditTitle.textContent=(w.type||"widget").toUpperCase();
+elWeditBody.innerHTML="";
+let p=getPage();
+function mkLabel(t){let l=document.createElement("label");l.textContent=t;return l;}
+function mkInput(val,on){let i=document.createElement("input");i.type="text";i.value=val||"";i.oninput=()=>on(i.value);return i;}
+function mkNum(val,on){let i=document.createElement("input");i.type="number";i.value=(val==null?"":val);i.oninput=()=>on(+i.value);return i;}
+function mkSel(val,opts,on){let s=document.createElement("select");opts.forEach(o=>{let op=document.createElement("option");op.value=o.v;op.textContent=o.t;s.appendChild(op);});s.value=val||opts[0].v;s.oninput=()=>on(s.value);return s;}
+function row2(a,b){let d=document.createElement("div");d.className="row";d.appendChild(a);d.appendChild(b);return d;}
+
+if(w.type==="text"){
+elWeditBody.appendChild(mkLabel("Text"));
+let ta=document.createElement("textarea");ta.value=w.text||"";ta.oninput=()=>{w.text=ta.value;renderCanvas();};elWeditBody.appendChild(ta);
+}
+if(w.type==="image"){
+elWeditBody.appendChild(mkLabel("Image URL"));
+elWeditBody.appendChild(mkInput(w.src||"",v=>{w.src=v;renderCanvas();}));
+}
+if(w.type==="url"){
+elWeditBody.appendChild(mkLabel("URL"));
+elWeditBody.appendChild(mkInput(w.src||"",v=>{w.src=v;renderCanvas();}));
+elWeditBody.appendChild(mkLabel("Mode"));
+elWeditBody.appendChild(mkSel(w.mode||"iframe",[{v:"iframe",t:"iframe"},{v:"fetch",t:"fetch (curl)"}],v=>{w.mode=v;renderCanvas();}));
+let a=document.createElement("div");a.appendChild(mkLabel("Content W"));a.appendChild(mkNum(w.contentW||(+p.settings.w||3840),v=>{w.contentW=clamp(+v||3840,320,20000);renderCanvas();}));
+let b=document.createElement("div");b.appendChild(mkLabel("Content H"));b.appendChild(mkNum(w.contentH||(+p.settings.h||2160),v=>{w.contentH=clamp(+v||2160,240,20000);renderCanvas();}));
+elWeditBody.appendChild(row2(a,b));
+}
+if(w.type==="clock"){
+elWeditBody.appendChild(mkLabel("Format (stored)"));
+elWeditBody.appendChild(mkInput(w.format||"HH:mm:ss",v=>{w.format=v;renderCanvas();}));
+}
+if(w.type==="carousel"){
+elWeditBody.appendChild(mkLabel("First item src"));
+let first=(w.playlist&&w.playlist[0])?w.playlist[0]:null;
+elWeditBody.appendChild(mkInput(first?first.src:"",v=>{w.playlist=w.playlist||[];if(!w.playlist[0])w.playlist[0]={type:"image",src:"",duration:5,title:""};w.playlist[0].src=v;renderCanvas();}));
+}
+
+elWeditPop.style.display="block";
+let x=120,y=70;
+if(anchorBtn){let r=anchorBtn.getBoundingClientRect();x=r.right+8;y=r.top;}
+let rr=elWeditPop.getBoundingClientRect();
+let ww=window.innerWidth,hh=window.innerHeight;
+x=Math.max(8,Math.min(x,ww-rr.width-8));
+y=Math.max(8,Math.min(y,hh-rr.height-8));
+elWeditPop.style.left=x+"px";
+elWeditPop.style.top=y+"px";
+}
+if(elWeditCancel)elWeditCancel.onclick=()=>{if(elWeditPop)elWeditPop.style.display="none";};
+if(elWeditPop)elWeditPop.addEventListener("mousedown",e=>e.stopPropagation(),true);
+if(elWeditPop)elWeditPop.addEventListener("contextmenu",e=>e.preventDefault(),true);
 function applyToSelected(fn){
 let p=getPage();
 selectedIds.forEach(id=>{let w=p.widgets.find(x=>x.id===id);if(w)fn(w);});
@@ -484,6 +607,33 @@ function hideHiddenMenuSoon(){
 if(hiddenHoverTimer)clearTimeout(hiddenHoverTimer);
 hiddenHoverTimer=setTimeout(()=>{if(elWctxHiddenMenu)elWctxHiddenMenu.style.display="none";},220);
 }
+function buildAddMenu(){
+if(!elWctxAddMenu)return;
+elWctxAddMenu.innerHTML="";
+[["text","Text"],["image","Image"],["url","URL"],["clock","Clock"],["carousel","Carousel"]].forEach(it=>{
+let b=document.createElement("button");
+b.textContent=it[1];
+b.onclick=e=>{
+e.preventDefault();e.stopPropagation();
+wctxHide();
+addWidget(it[0]);
+};
+elWctxAddMenu.appendChild(b);
+});
+}
+function showAddMenu(anchorBtn){
+if(!elWctxAddMenu)return;
+buildAddMenu();
+elWctxAddMenu.style.display="block";
+let r=anchorBtn.getBoundingClientRect();
+let x=r.right+8,y=r.top;
+let mr=elWctxAddMenu.getBoundingClientRect();
+let ww=window.innerWidth,hh=window.innerHeight;
+x=Math.max(8,Math.min(x,ww-mr.width-8));
+y=Math.max(8,Math.min(y,hh-mr.height-8));
+elWctxAddMenu.style.left=x+"px";
+elWctxAddMenu.style.top=y+"px";
+}
 if(elColorInp)elColorInp.oninput=()=>{
 let v=elColorInp.value||"#ffffff";
 if(colorMode==="bg")applyToSelected(w=>{w.style=w.style||{};w.style.bg=v;});
@@ -493,6 +643,8 @@ renderCanvas();
 document.addEventListener("click",e=>{
 if(elWCtxMenu&&elWCtxMenu.style.display==="block"&&elWCtxMenu.contains(e.target))return;
 if(elWctxHiddenMenu&&elWctxHiddenMenu.style.display==="block"&&elWctxHiddenMenu.contains(e.target))return;
+if(elWctxAddMenu&&elWctxAddMenu.style.display==="block"&&elWctxAddMenu.contains(e.target))return;
+if(elWeditPop&&elWeditPop.style.display==="block"&&elWeditPop.contains(e.target))return;
 if(elColorPop&&elColorPop.style.display==="flex"&&elColorPop.contains(e.target))return;
 wctxHide();
 },true);
@@ -532,10 +684,15 @@ else if(to<=pi&&pi<from)pi++;
 selectedIds=[];
 renderAll();
 }
-function ctxHide(){if(!elCtxMenu)return;elCtxMenu.style.display="none";ctxPageIndex=null;}
+function pagePopHide(){if(elPagePop)elPagePop.style.display="none";if(elPagePopHead)elPagePopHead.textContent="";if(elPagePopBody)elPagePopBody.innerHTML="";}
+function renamePopHide(){if(elRenamePop)elRenamePop.style.display="none";}
+function ctxHide(){if(!elCtxMenu)return;elCtxMenu.style.display="none";ctxPageIndex=null;pagePopHide();renamePopHide();}
 function ctxShow(e,i){
 e.preventDefault();e.stopPropagation();
-ctxPageIndex=i;pi=i;selectedIds=[];renderAll();
+ctxPageIndex=i;
+pi=i;
+selectedIds=[];
+renderAll();
 elCtxMenu.style.display="block";
 let x=e.clientX,y=e.clientY;
 let r=elCtxMenu.getBoundingClientRect();
@@ -545,26 +702,75 @@ y=Math.max(8,Math.min(y,hh-r.height-8));
 elCtxMenu.style.left=x+"px";
 elCtxMenu.style.top=y+"px";
 }
-document.addEventListener("click",e=>{if(elCtxMenu&&elCtxMenu.style.display==="block"&&elCtxMenu.contains(e.target))return;ctxHide();},true);
+function pagePopShow(title,node){
+if(!elPagePop||!elPagePopBody||!elPagePopHead)return;
+elPagePopHead.textContent=title||"";
+elPagePopBody.innerHTML="";
+if(node)elPagePopBody.appendChild(node);
+elPagePop.style.display="block";
+let mr=elCtxMenu.getBoundingClientRect();
+let x=mr.right+8,y=mr.top;
+let pr=elPagePop.getBoundingClientRect();
+let ww=window.innerWidth,hh=window.innerHeight;
+x=Math.max(8,Math.min(x,ww-pr.width-8));
+y=Math.max(8,Math.min(y,hh-pr.height-8));
+elPagePop.style.left=x+"px";
+elPagePop.style.top=y+"px";
+}
+function renamePopShow(){
+if(!elRenamePop||!elRenameInp)return;
+let p=data.pages[ctxPageIndex];
+elRenameInp.value=(p&&p.name)?String(p.name):"";
+elRenamePop.style.display="block";
+let mr=elCtxMenu.getBoundingClientRect();
+let x=mr.right+8,y=mr.top;
+let rr=elRenamePop.getBoundingClientRect();
+let ww=window.innerWidth,hh=window.innerHeight;
+x=Math.max(8,Math.min(x,ww-rr.width-8));
+y=Math.max(8,Math.min(y,hh-rr.height-8));
+elRenamePop.style.left=x+"px";
+elRenamePop.style.top=y+"px";
+elRenameInp.focus();
+elRenameInp.select();
+}
+if(elPagePopClose)elPagePopClose.onclick=()=>pagePopHide();
+if(elRenameCancel)elRenameCancel.onclick=()=>renamePopHide();
+if(elRenameOk)elRenameOk.onclick=()=>{
+let p=data.pages[ctxPageIndex];
+if(!p)return;
+let v=String(elRenameInp.value||"").trim();
+if(v)p.name=v;
+renamePopHide();
+renderAll();
+};
+if(elRenameInp)elRenameInp.onkeydown=e=>{
+if(e.key==="Enter"){e.preventDefault();if(elRenameOk)elRenameOk.click();}
+if(e.key==="Escape"){e.preventDefault();renamePopHide();}
+};
+document.addEventListener("click",e=>{if(elCtxMenu&&elCtxMenu.style.display==="block"&&elCtxMenu.contains(e.target))return;if(elPagePop&&elPagePop.style.display==="block"&&elPagePop.contains(e.target))return;if(elRenamePop&&elRenamePop.style.display==="block"&&elRenamePop.contains(e.target))return;ctxHide();},true);
+
 document.addEventListener("keydown",e=>{if(e.key==="Escape")ctxHide();},true);
 window.addEventListener("resize",()=>ctxHide(),true);
 document.addEventListener("scroll",()=>ctxHide(),true);
 if(elCtxMenu)elCtxMenu.addEventListener("contextmenu",e=>e.preventDefault());
 if(elCtxMenu)elCtxMenu.addEventListener("mousedown",e=>e.stopPropagation(),true);
 if(elCtxMenu)elCtxMenu.onclick=e=>{
-let b=e.target.closest("button");if(!b)return;
-let act=b.dataset.act||"";let i=ctxPageIndex;if(i==null)return;
+let b=e.target.closest("button");if(!b||b.disabled)return;
+let act=b.dataset.act||"";
+let i=ctxPageIndex;
 ctxHide();
+if(i==null)return;
 if(act==="general"){openPageGeneral(i);return;}
 if(act==="schedule"){openPageSchedule(i);return;}
-if(act==="rename"){let p=data.pages[i];let nn=prompt("Page name:",p.name);if(nn!=null){nn=String(nn).trim();if(nn)p.name=nn;renderAll();}return;}
+if(act==="rename"){ctxPageIndex=i;renamePopShow();return;}
 if(act==="duplicate"){dupPage(i);return;}
 if(act==="delete"){if(data.pages.length<=1)return;if(confirm("Delete page?"))delPage(i);return;}
 };
 if(elWCtxMenu)elWCtxMenu.onclick=e=>{
 let b=e.target.closest("button");if(!b||b.disabled)return;
 let act=b.dataset.act||"";
-if(act==="add"){wctxHide();modalShow();return;}
+if(act==="add"){showAddMenu(b);return;}
+if(act==="edit"){weditShow(b);return;}
 if(!selectedIds.length)return;
 if(act==="dup"){wctxHide();dupSelected();return;}
 if(act==="del"){wctxHide();delSelected();return;}
@@ -722,14 +928,46 @@ elPageList.appendChild(row);
 function miniBtn(t,fn){let b=document.createElement("button");b.textContent=t;b.onclick=fn;return b;}
 function movePage(i,dir){let j=i+dir;if(j<0||j>=data.pages.length)return;let a=data.pages[i];data.pages.splice(i,1);data.pages.splice(j,0,a);pi=j;renderAll();}
 function addPage(){
-let n=prompt("Page name:","Page "+(data.pages.length+1));
-n=(n==null?"":String(n)).trim();
-if(!n)n="Page "+(data.pages.length+1);
-data.pages.push({id:uid(),name:n,thumb:"",settings:{w:3840,h:2160},background:{fade:1,items:[]},widgets:[]});
+let btn=document.querySelector('#pagesPanel .bar button');
+newPagePopShow(btn);
+}
+function newPagePopHide(){if(elNewPagePop)elNewPagePop.style.display="none";}
+function addPageWithName(name){
+name=(name==null?"":String(name)).trim();
+if(!name)name="Page "+(data.pages.length+1);
+data.pages.push({id:uid(),name:name,thumb:"",settings:{w:3840,h:2160},background:{fade:1,items:[]},widgets:[]});
 pi=data.pages.length-1;
 selectedIds=[];
 renderAll();
 }
+function newPagePopShow(anchorEl){
+if(!elNewPagePop||!elNewPageInp)return;
+elNewPageInp.value="Page "+(data.pages.length+1);
+elNewPagePop.style.display="block";
+let x=120,y=70;
+if(anchorEl){
+let r=anchorEl.getBoundingClientRect();
+x=r.right+8;y=r.top;
+}
+let rr=elNewPagePop.getBoundingClientRect();
+let ww=window.innerWidth,hh=window.innerHeight;
+x=Math.max(8,Math.min(x,ww-rr.width-8));
+y=Math.max(8,Math.min(y,hh-rr.height-8));
+elNewPagePop.style.left=x+"px";
+elNewPagePop.style.top=y+"px";
+elNewPageInp.focus();
+elNewPageInp.select();
+}
+if(elNewPageCancel)elNewPageCancel.onclick=()=>newPagePopHide();
+if(elNewPageOk)elNewPageOk.onclick=()=>{
+let v=String(elNewPageInp.value||"").trim();
+newPagePopHide();
+addPageWithName(v);
+};
+if(elNewPageInp)elNewPageInp.onkeydown=e=>{
+if(e.key==="Enter"){e.preventDefault();if(elNewPageOk)elNewPageOk.click();}
+if(e.key==="Escape"){e.preventDefault();newPagePopHide();}
+};
 function dupPage(i){
 let p=deepClone(data.pages[i]);p.id=uid();p.name=p.name+" Copy";p.widgets.forEach(w=>{w.id=uid();w.x+=20;w.y+=20;});data.pages.push(p);pi=data.pages.length-1;selectedIds=[];renderAll();
 }
@@ -1338,7 +1576,6 @@ try{let j=JSON.parse(s);data=j;sanitizeClient();markStatus("Imported",true);rend
 catch(e){markStatus("Import invalid",false);}
 }
 renderAll();
-setMode("editor");
 if(typeof applyViewScale==="function")applyViewScale();
 </script>
 </body>
