@@ -239,6 +239,8 @@ body.modeEditor #widgetListLeft{display:none!important}
 #weditPop .lbl{font-size:12px;color:#111827;font-weight:800;margin-bottom:6px}
 #weditPop input,#weditPop select,#weditPop textarea{width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius:8px;padding:8px;font:inherit}
 #weditPop .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#weditPop{max-height:min(80vh,860px);overflow:hidden}
+#weditBody{max-height:calc(min(80vh,860px) - 54px);overflow:auto;padding-right:4px}
 </style>
 
 </head>
