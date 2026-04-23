@@ -235,7 +235,7 @@ body.modeEditor #widgetListLeft{display:none!important}
 #newPagePop .rpRow{display:flex;gap:8px;margin-top:8px}
 #weditPop{position:fixed;z-index:10024;display:none;flex-direction:column;background:#fff;border:1px solid #d1d5db;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.45);padding:10px;min-width:320px;max-width:min(520px,92vw);max-height:80vh;overflow:hidden;box-sizing:border-box}
 #weditPop .lbl{font-size:12px;color:#111827;font-weight:800;margin:0 0 6px;flex:0 0 auto}
-#weditBody{flex:1 1 auto;overflow:auto;overflow-x:hidden;padding-right:10px;box-sizing:border-box}
+#weditBody{flex:1 1 auto;overflow:auto;overflow-x:hidden;padding-right:10px;box-sizing:border-box;scrollbar-gutter:stable both-edges}
 #weditPop input,#weditPop select,#weditPop textarea{width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius:8px;padding:8px;font:inherit}
 #weditPop .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .rpRow{display:flex;gap:8px;margin-top:8px;flex:0 0 auto}
@@ -685,7 +685,7 @@ document.addEventListener("click",e=>{
 if(elWCtxMenu&&elWCtxMenu.style.display==="block"&&elWCtxMenu.contains(e.target))return;
 if(elWctxHiddenMenu&&elWctxHiddenMenu.style.display==="block"&&elWctxHiddenMenu.contains(e.target))return;
 if(elWctxAddMenu&&elWctxAddMenu.style.display==="block"&&elWctxAddMenu.contains(e.target))return;
-if(elWeditPop&&elWeditPop.style.display==="block"&&elWeditPop.contains(e.target))return;
+if(elWeditPop&&elWeditPop.style.display!=="none"&&elWeditPop.contains(e.target))return;
 if(elColorPop&&elColorPop.style.display==="flex"&&elColorPop.contains(e.target))return;
 wctxHide();
 },true);
@@ -696,7 +696,7 @@ let inside=false;
 if(elWCtxMenu.contains(e.target))inside=true;
 if(elWctxHiddenMenu&&elWctxHiddenMenu.style.display==="block"&&elWctxHiddenMenu.contains(e.target))inside=true;
 if(elWctxAddMenu&&elWctxAddMenu.style.display==="block"&&elWctxAddMenu.contains(e.target))inside=true;
-if(elWeditPop&&elWeditPop.style.display==="block"&&elWeditPop.contains(e.target))inside=true;
+if(elWeditPop&&elWeditPop.style.display!=="none"&&elWeditPop.contains(e.target))inside=true;
 if(elColorPop&&elColorPop.style.display==="flex"&&elColorPop.contains(e.target))inside=true;
 if(inside){if(wctxMoveT){clearTimeout(wctxMoveT);wctxMoveT=null;}return;}
 if(wctxMoveT)clearTimeout(wctxMoveT);
