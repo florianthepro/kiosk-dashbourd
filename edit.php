@@ -1,4 +1,4 @@
-<?php //310
+<?php
 header("Content-Type:text/html;charset=utf-8");
 $path=__DIR__."/data.json";
 $allow_private_fetch=false;
