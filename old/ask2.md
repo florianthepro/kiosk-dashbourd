@@ -1,3 +1,10 @@
+✅ Kein UI‑State‑Chaos
+✅ Kein Tab‑Denken mehr
+✅ Kontext steuert UI
+✅ Max. 2–3 sichtbare Gruppen
+✅ Editor fühlt sich ruhig & logisch an
+
+
 ```
 nun ist code """<?php //310
 header("Content-Type:text/html;charset=utf-8");
