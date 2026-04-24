@@ -209,7 +209,7 @@ body.modeEditor #widgetListLeft{display:none!important}
 #wctxMenu button:hover{background:#f3f4f6}
 #wctxMenu .sep{height:1px;background:#e5e7eb;margin:4px 0}
 #wctxMenu button[disabled]{opacity:.45;cursor:default}
-#colorPop{position:fixed;z-index:10021;display:none;background:#fff;border:1px solid #d1d5db;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.45);padding:10px;gap:10px;align-items:center}
+#colorPop{position:fixed;z-index:10050;display:none;background:#fff;border:1px solid #d1d5db;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.45);padding:10px;gap:10px;align-items:center;pointer-events:auto}
 #colorPop input[type="color"]{width:52px;height:42px;border:0;padding:0;background:transparent}
 #colorPop .lbl{font-size:12px;color:#111827}
 #wctxHiddenMenu{position:fixed;z-index:10022;display:none;min-width:260px;background:#fff;border:1px solid #d1d5e1;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.45);overflow:hidden}
@@ -397,11 +397,17 @@ const elEditModalBody=document.getElementById("editModalBody");
 const elEditModalClose=document.getElementById("editModalClose");
 const elWCtxMenu=document.getElementById("wctxMenu");
 const elColorPop=document.getElementById("colorPop");
+let colorHideT=null;
 if(elColorPop){
-elColorPop.addEventListener("mousedown",e=>e.stopPropagation(),true);
-elColorPop.addEventListener("click",e=>e.stopPropagation(),true);
-elColorPop.addEventListener("pointerleave",()=>{elColorPop.style.display="none";},true);
-elColorPop.addEventListener("mouseleave",()=>{elColorPop.style.display="none";},true);
+let stop=e=>e.stopPropagation();
+let cancel=()=>{if(colorHideT){clearTimeout(colorHideT);colorHideT=null;}};
+let schedule=()=>{cancel();colorHideT=setTimeout(()=>{if(elColorPop)elColorPop.style.display="none";},180);};
+elColorPop.addEventListener("mousedown",stop,true);
+elColorPop.addEventListener("click",stop,true);
+elColorPop.addEventListener("pointerenter",cancel,true);
+elColorPop.addEventListener("mouseenter",cancel,true);
+elColorPop.addEventListener("pointerleave",schedule,true);
+elColorPop.addEventListener("mouseleave",schedule,true);
 }
 const elColorInp=document.getElementById("colorInp");
 const elColorPopLbl=document.getElementById("colorPopLbl");
