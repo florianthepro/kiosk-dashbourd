@@ -397,6 +397,12 @@ const elEditModalBody=document.getElementById("editModalBody");
 const elEditModalClose=document.getElementById("editModalClose");
 const elWCtxMenu=document.getElementById("wctxMenu");
 const elColorPop=document.getElementById("colorPop");
+if(elColorPop){
+elColorPop.addEventListener("mousedown",e=>e.stopPropagation(),true);
+elColorPop.addEventListener("click",e=>e.stopPropagation(),true);
+elColorPop.addEventListener("pointerleave",()=>{elColorPop.style.display="none";},true);
+elColorPop.addEventListener("mouseleave",()=>{elColorPop.style.display="none";},true);
+}
 const elColorInp=document.getElementById("colorInp");
 const elColorPopLbl=document.getElementById("colorPopLbl");
 const elWctxHiddenMenu=document.getElementById("wctxHiddenMenu");
